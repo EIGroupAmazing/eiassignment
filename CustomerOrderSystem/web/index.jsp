@@ -14,7 +14,7 @@
     <body>
         <h1>Hello World!</h1>
         <form  action="/retrieve-packages" method="get">
-            Enter your postal code: <input type="text">
+            Enter your postal code: <input type="text" name="postalcode" >
         </form>
     </body>
     

@@ -12,7 +12,16 @@
         <title>Restaurant Info</title>
     </head>
     <body>
-        <form method="post" action="/restaurant/info">
+        <p>
+            <%
+            //retrieve the json from the request parameter, then convert and display
+            if (request.getAttribute("message")!=null){
+                out.println( (String)request.getAttribute("message"));
+            }
+            %>
+        </p>
+        <form method="post" action="/restaurants">
+            Username: <input type="text" name="username">
             Postal Code: <input type="text" name="postalCode">
             <input type="submit" value="Search!">
         </form>
