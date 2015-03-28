@@ -12,8 +12,8 @@
     <pd:returnBindings/>
     <pd:endName>End</pd:endName>
     <pd:endType wsMsgRef="wsdlPfx:ResponseMessage"/>
-    <pd:endX>884</pd:endX>
-    <pd:endY>68</pd:endY>
+    <pd:endX>887</pd:endX>
+    <pd:endY>77</pd:endY>
     <pd:errorSchemas/>
     <pd:processVariables/>
     <pd:targetNamespace>http://xmlns.example.com/1427467489773</pd:targetNamespace>
@@ -147,76 +147,26 @@
             </xmlString>
         </pd:inputBindings>
     </pd:activity>
-    <pd:activity name="SOAPRequestReply">
-        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
-        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
-        <pd:x>554</pd:x>
-        <pd:y>69</pd:y>
-        <config>
-            <timeout>0</timeout>
-            <soapAttachmentStyle>SwA</soapAttachmentStyle>
-            <timeoutType>Seconds</timeoutType>
-            <service>pfx2:RetrieveRestaurantList</service>
-            <servicePort>RetrieveRestaurantListHttpSoap11Endpoint</servicePort>
-            <operation>retrieveRestaurantDetails</operation>
-            <soapAction>urn:retrieveRestaurantDetails</soapAction>
-            <endpointURL>http://localhost:8080/axis2/services/RetrieveRestaurantList.RetrieveRestaurantListHttpSoap11Endpoint/</endpointURL>
-            <authScheme>NONE</authScheme>
-        </config>
-        <pd:inputBindings>
-            <inputMessage>
-                <pfx2:retrieveRestaurantDetails>
-                    <pfx2:args0>
-                        <xsl:choose>
-                            <xsl:when test="exists($Parse-XML/GeocodeResponse/result/address_component[2]/long_name)">
-                                <xsl:value-of select="$Parse-XML/GeocodeResponse/result/address_component[2]/long_name"/>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
-                            </xsl:otherwise>
-                        </xsl:choose>
-                    </pfx2:args0>
-                </pfx2:retrieveRestaurantDetails>
-            </inputMessage>
-        </pd:inputBindings>
-    </pd:activity>
-    <pd:activity name="JMS Queue Sender">
-        <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
-        <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
-        <pd:x>720</pd:x>
-        <pd:y>81</pd:y>
+    <pd:activity name="JMS Queue Requestor">
+        <pd:type>com.tibco.plugin.jms.JMSQueueRequestReplyActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueRequestReplyActivity</pd:resourceType>
+        <pd:x>595</pd:x>
+        <pd:y>73</pd:y>
         <config>
             <PermittedMessageType>Text</PermittedMessageType>
             <SessionAttributes>
                 <transacted>false</transacted>
                 <acknowledgeMode>1</acknowledgeMode>
                 <maxSessions>1</maxSessions>
-                <destination>q.request.unsortedlist</destination>
+                <destination>q.</destination>
             </SessionAttributes>
             <ConfigurableHeaders>
                 <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
                 <JMSExpiration>0</JMSExpiration>
                 <JMSPriority>4</JMSPriority>
             </ConfigurableHeaders>
-            <ConnectionReference>/JMS Connection.sharedjmscon</ConnectionReference>
         </config>
-        <pd:inputBindings>
-            <ns3:ActivityInput>
-                <Body>
-                    <xsl:value-of select="$SOAPRequestReply/outputMessage/pfx2:retrieveRestaurantDetailsResponse/pfx2:return"/>
-                </Body>
-                <DynamicProperties>
-                    <property>
-                        <name>
-                            <xsl:value-of select="&quot;Customer_id&quot;"/>
-                        </name>
-                        <value>
-                            <xsl:value-of select="$Start/wsdlPfx:RequestMessage/part1/ns:search_creteria/ns:customer_id"/>
-                        </value>
-                    </property>
-                </DynamicProperties>
-            </ns3:ActivityInput>
-        </pd:inputBindings>
+        <pd:inputBindings/>
     </pd:activity>
     <pd:transition>
         <pd:from>Start</pd:from>
@@ -234,21 +184,7 @@
     </pd:transition>
     <pd:transition>
         <pd:from>Parse XML</pd:from>
-        <pd:to>SOAPRequestReply</pd:to>
-        <pd:lineType>Default</pd:lineType>
-        <pd:lineColor>-16777216</pd:lineColor>
-        <pd:conditionType>always</pd:conditionType>
-    </pd:transition>
-    <pd:transition>
-        <pd:from>SOAPRequestReply</pd:from>
-        <pd:to>JMS Queue Sender</pd:to>
-        <pd:lineType>Default</pd:lineType>
-        <pd:lineColor>-16777216</pd:lineColor>
-        <pd:conditionType>always</pd:conditionType>
-    </pd:transition>
-    <pd:transition>
-        <pd:from>JMS Queue Sender</pd:from>
-        <pd:to>End</pd:to>
+        <pd:to>JMS Queue Requestor</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
