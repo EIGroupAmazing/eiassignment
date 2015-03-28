@@ -14,10 +14,10 @@
     </head>
     <body>
         <h1>Hello World!</h1>
-        <ol style="list-style-type:disc">
-<form action="demo_form.asp" method="get">
-  <input type="checkbox" name="vehicle" value="Bike"> I have a bike<br>
-  <input type="checkbox" name="vehicle" value="Car" checked> I have a car<br>
+        <form action="/take-order" method="post">
+
+  Bike
+  <input type="checkbox" name="package" value="Car"> I have a car<br>
   <input type="submit" value="Submit">
 </form>
     <%
@@ -27,24 +27,18 @@
             for(int i=0;i<packages.size();i++){
                 String[] currentRestaurant = packages.get(i);
                 %>
-    <li>
-                <%
-                out.println(currentRestaurant[0]);
-                %>
-    <ol>
+                <b><%=currentRestaurant[0]%></b><br>
+                <input type="checkbox" name="package" value="<%=currentRestaurant[0]%>/<%=currentRestaurant[j]%>"><%=currentRestaurant[j]%><br>
     
                 <%
                 for(int j=1;j<currentRestaurant.length;j++){
                     out.println("<li>"+currentRestaurant[j]+"</li>");
                 }
                 %>
-                
-    </ol></li>
                 <%
             }
         }
     %>
-    
-        </ol>
+    </form>
     </body>
 </html>

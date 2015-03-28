@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alex
  */
 @WebServlet(name = "OrderParingController", urlPatterns = {"/OrderParingController"})
-public class OrderParingController extends HttpServlet {
+public class OrderParsingController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
