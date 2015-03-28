@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://xmlns.example.com/unique/default/namespace/1134438639124" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://xmlns.example.com/1427451287496" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRegion.xsd">
+<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://xmlns.example.com/unique/default/namespace/1134438639124" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://xmlns.example.com/1427451287496" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx2="http://ws.apache.org/axis2" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRegion.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRegion.xsd" schemaLocation="/retrieveRegion.xsd"/>
     <wsdl:import namespace="http://xmlns.example.com/1427451287496" location="/Service/MapPostal.wsdl"/>
+    <wsdl:import namespace="http://ws.apache.org/axis2" location="/Service/retrieveRestaurantList.wsdl"/>
     <pd:name>Service/PortTypesendRestaurantList.process</pd:name>
     <pd:startName>Start</pd:startName>
     <pd:startType wsMsgRef="wsdlPfx:RequestMessage"/>
@@ -148,14 +149,35 @@
     <pd:activity name="SOAPRequestReply">
         <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
         <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
-        <pd:x>553</pd:x>
-        <pd:y>69</pd:y>
+        <pd:x>547</pd:x>
+        <pd:y>72</pd:y>
         <config>
             <timeout>0</timeout>
             <soapAttachmentStyle>SwA</soapAttachmentStyle>
             <timeoutType>Seconds</timeoutType>
+            <service>pfx2:RetrieveRestaurantList</service>
+            <servicePort>RetrieveRestaurantListHttpSoap11Endpoint</servicePort>
+            <operation>retrieveRestaurantDetails</operation>
+            <soapAction>urn:retrieveRestaurantDetails</soapAction>
+            <endpointURL>http://localhost:8080/axis2/services/RetrieveRestaurantList.RetrieveRestaurantListHttpSoap11Endpoint/</endpointURL>
+            <authScheme>NONE</authScheme>
         </config>
-        <pd:inputBindings/>
+        <pd:inputBindings>
+            <inputMessage>
+                <pfx2:retrieveRestaurantDetails>
+                    <pfx2:args0>
+                        <xsl:choose>
+                            <xsl:when test="exists($Parse-XML/GeocodeResponse/result/address_component[2]/long_name)">
+                                <xsl:value-of select="$Parse-XML/GeocodeResponse/result/address_component[2]/long_name"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </pfx2:args0>
+                </pfx2:retrieveRestaurantDetails>
+            </inputMessage>
+        </pd:inputBindings>
     </pd:activity>
     <pd:transition>
         <pd:from>Start</pd:from>

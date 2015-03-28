@@ -6,7 +6,7 @@ import java.util.Calendar;
 
 public class RetrieveRestaurants{
 
-    public String retrievePetDetails (String region) {
+    public String retrieveRestaurantDetails (String region) {
 
         
         String dbURL = "jdbc:mysql://localhost:3306/restaurant_info";
