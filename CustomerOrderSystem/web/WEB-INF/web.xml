@@ -5,7 +5,7 @@
         <servlet-class>controller.RestaurantInfoController</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>RestaurantInfoController</servlet-name>
+        <servlet-name>RestaurantRetrievalController</servlet-name>
         <url-pattern>/restaurants</url-pattern>
     </servlet-mapping>
     <session-config>

@@ -12,10 +12,9 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Select our premium meal packages</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
         <form action="/take-order" method="post">
     <%
 
@@ -26,17 +25,18 @@
                 String restName = currentRestaurant.getName();
                 ArrayList<Pkg> pkgList = currentRestaurant.getPkgList();
                 %>
-                <b><%=restName%></b><br>
-                <%for(int j=1;j<pkgList.size();j++){
+                <b>Restaurant name: <%=restName%></b><br>
+                <%for(int j=0;j<pkgList.size();j++){
                     Pkg currentPkg = pkgList.get(j);
                     String pkgName = currentPkg.getName();
                     String pkgDetail = currentPkg.getDetail();
                     String pkgPrice = currentPkg.getPrice();
                 %>
                     <input type="checkbox" name="package" value="<%=restName%>/<%=pkgName%>"><%=pkgName%><br>
-                    Package price : <%=pkgPrice%><br>
-                    Package description : <%=pkgDetail%><br>
+                    - Package price : <span><%=pkgPrice%></span><br>
+                    - Package description : <%=pkgDetail%><br>
                 <%}%>
+                <br>
                 <%
             }
         }

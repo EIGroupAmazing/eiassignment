@@ -15,13 +15,13 @@ import org.xml.sax.helpers.DefaultHandler;
 
 
 public class XMLParser extends DefaultHandler {
-    private String tmpValue;
-    private String xmlStr;
-    private String ns = "ns:";
-    private Customer cust;
-    private Restaurant rest;
-    private Pkg pkg;
-    private ArrayList<Restaurant> restList;
+    String tmpValue;
+    String xmlStr;
+    String ns = "ns:";
+    Customer cust;
+    Restaurant rest;
+    Pkg pkg;
+    ArrayList<Restaurant> restList;
     
     
     public XMLParser(String xmlStr) {
@@ -34,6 +34,7 @@ public class XMLParser extends DefaultHandler {
         Object[] toreturn = new Object[2];
         toreturn[0] = cust;
         toreturn[1] = restList;
+        
         return toreturn;
     }
     private void parseDocument() {

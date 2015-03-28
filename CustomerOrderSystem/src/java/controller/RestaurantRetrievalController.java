@@ -56,64 +56,64 @@ public class RestaurantRetrievalController extends HttpServlet {
 "<!-- Created with Liquid XML 2014 Developer Bundle Edition (Education) 12.2.8.5459 (http://www.liquid-technologies.com) -->\n" +
 "<ns:result xmlns:ns=\"http://xmlns.example.com/unique/default/namespace/1134438639123\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://xmlns.example.com/unique/default/namespace/1134438639123 file:///C:/Users/Alex/Downloads/Telegram%20Desktop/restaurant_list.xsd\">\n" +
 "    <ns:customer>\n" +
-"        <ns:id>string</ns:id>\n" +
-"        <ns:email>string</ns:email>\n" +
-"        <ns:phone>string</ns:phone>\n" +
+"        <ns:id>112</ns:id>\n" +
+"        <ns:email>1234@321.c0m</ns:email>\n" +
+"        <ns:phone>431234</ns:phone>\n" +
 "    </ns:customer>\n" +
 "    <ns:restaurant>\n" +
 "        <ns:packages>\n" +
-"            <ns:package_name>string</ns:package_name>\n" +
-"            <ns:package_detail>string</ns:package_detail>\n" +
-"            <ns:package_price>-5094.7250941961</ns:package_price>\n" +
+"            <ns:package_name>pck1</ns:package_name>\n" +
+"            <ns:package_detail>pck1 is good</ns:package_detail>\n" +
+"            <ns:package_price>5094</ns:package_price>\n" +
 "        </ns:packages>\n" +
-"        <ns:name>string</ns:name>\n" +
+"        <ns:name>rest1 name</ns:name>\n" +
 "    </ns:restaurant>\n" +
 "    <ns:restaurant>\n" +
 "        <ns:packages>\n" +
-"            <ns:package_name>string</ns:package_name>\n" +
+"            <ns:package_name>pkg3</ns:package_name>\n" +
+"            <ns:package_detail>pkg3 is awesome</ns:package_detail>\n" +
+"            <ns:package_price>2252</ns:package_price>\n" +
+"        </ns:packages>\n" +
+"        <ns:packages>\n" +
+"            <ns:package_name>pkg second</ns:package_name>\n" +
 "            <ns:package_detail>string</ns:package_detail>\n" +
-"            <ns:package_price>2252.0949058039</ns:package_price>\n" +
+"            <ns:package_price>3621</ns:package_price>\n" +
 "        </ns:packages>\n" +
 "        <ns:packages>\n" +
 "            <ns:package_name>string</ns:package_name>\n" +
 "            <ns:package_detail>string</ns:package_detail>\n" +
-"            <ns:package_price>-3621.1650941961</ns:package_price>\n" +
+"            <ns:package_price>2317.7749</ns:package_price>\n" +
 "        </ns:packages>\n" +
 "        <ns:packages>\n" +
 "            <ns:package_name>string</ns:package_name>\n" +
 "            <ns:package_detail>string</ns:package_detail>\n" +
-"            <ns:package_price>2317.7749058039</ns:package_price>\n" +
+"            <ns:package_price>1929.794</ns:package_price>\n" +
 "        </ns:packages>\n" +
-"        <ns:packages>\n" +
-"            <ns:package_name>string</ns:package_name>\n" +
-"            <ns:package_detail>string</ns:package_detail>\n" +
-"            <ns:package_price>1929.7949058039</ns:package_price>\n" +
-"        </ns:packages>\n" +
-"        <ns:name>string</ns:name>\n" +
+"        <ns:name>saffhjka</ns:name>\n" +
 "    </ns:restaurant>\n" +
 "    <ns:restaurant>\n" +
-"        <ns:name>string</ns:name>\n" +
-"    </ns:restaurant>\n" +
-"    <ns:restaurant>\n" +
-"        <ns:packages>\n" +
-"            <ns:package_name>string</ns:package_name>\n" +
-"            <ns:package_detail>string</ns:package_detail>\n" +
-"            <ns:package_price>9752.7349058039</ns:package_price>\n" +
-"        </ns:packages>\n" +
-"        <ns:packages>\n" +
-"            <ns:package_name>string</ns:package_name>\n" +
-"            <ns:package_detail>string</ns:package_detail>\n" +
-"            <ns:package_price>27.4949058039</ns:package_price>\n" +
-"        </ns:packages>\n" +
-"        <ns:name>string</ns:name>\n" +
+"        <ns:name>aawifh</ns:name>\n" +
 "    </ns:restaurant>\n" +
 "    <ns:restaurant>\n" +
 "        <ns:packages>\n" +
-"            <ns:package_name>string</ns:package_name>\n" +
-"            <ns:package_detail>string</ns:package_detail>\n" +
-"            <ns:package_price>2280.2749058039</ns:package_price>\n" +
+"            <ns:package_name>package name</ns:package_name>\n" +
+"            <ns:package_detail>ftaef</ns:package_detail>\n" +
+"            <ns:package_price>9752.734</ns:package_price>\n" +
 "        </ns:packages>\n" +
-"        <ns:name>string</ns:name>\n" +
+"        <ns:packages>\n" +
+"            <ns:package_name>packagename</ns:package_name>\n" +
+"            <ns:package_detail>detail</ns:package_detail>\n" +
+"            <ns:package_price>27.494</ns:package_price>\n" +
+"        </ns:packages>\n" +
+"        <ns:name>rest132</ns:name>\n" +
+"    </ns:restaurant>\n" +
+"    <ns:restaurant>\n" +
+"        <ns:packages>\n" +
+"            <ns:package_name>awef</ns:package_name>\n" +
+"            <ns:package_detail>fhajk</ns:package_detail>\n" +
+"            <ns:package_price>2280.2749</ns:package_price>\n" +
+"        </ns:packages>\n" +
+"        <ns:name>restname</ns:name>\n" +
 "    </ns:restaurant>\n" +
 "</ns:result>";
             //TODO: parse returned XMl to object list
@@ -130,7 +130,7 @@ public class RestaurantRetrievalController extends HttpServlet {
             
             //ArrayList<String[]> pkgList = new ArrayList();//The returned arraylist message will be stored here
             request.setAttribute("message",restList );
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/restaurantInfoForm.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/listPackages.jsp");
             dispatcher.forward(request,response);
 
         }catch(NumberFormatException e){

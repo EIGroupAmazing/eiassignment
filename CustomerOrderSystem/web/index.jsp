@@ -20,10 +20,13 @@
             }
             %>
         </p>
-        <form method="get" action="/restaurants">
-            Username: <input type="text" name="username"><br>
-            Postal Code: <input type="text" name="postalCode"><br>
+        <form method="get" action="restaurants">
+            <fieldset   stype="width: 50%; height: 50%;">
+            <legend>Search Food Packages</legend>
+            <input type="text" name="username" placeholder="Customer ID">
+            <input type="text" name="postalCode" placeholder="Delivery Postal Code">
             <input type="submit" value="Search!">
+            </fieldset>
         </form>
     </body>
 </html>
