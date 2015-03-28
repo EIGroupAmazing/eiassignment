@@ -6,7 +6,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>RestaurantInfoController</servlet-name>
-        <url-pattern>/RestaurantInfoController</url-pattern>
+        <url-pattern>/restaurants</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

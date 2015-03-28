@@ -8,6 +8,7 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -44,7 +45,7 @@ public class OrderParsingController extends HttpServlet {
             String customerId = (String)session.getAttribute("customerid");
             String email = (String)session.getAttribute("email");
             String phone = (String)session.getAttribute("phone");
-            //ArrayList<package> pkgList = (String) session.getAttribute();
+            ArrayList<Package> pkgList = (ArrayList<Package>) session.getAttribute("restList");
             
         } finally {
             out.close();
