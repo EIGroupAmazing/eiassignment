@@ -116,7 +116,7 @@ INSERT INTO `package` (`packageName`, `Price`, `RestaurantName`, `Description`) 
 
 CREATE TABLE IF NOT EXISTS `urlMapping` (
   `restaurantName` varchar(40) NOT NULL,
-  `region` varchar(40) NOT NULL,
+  `url` varchar(40) NOT NULL,
   PRIMARY KEY (`restaurantName`,`url`),
   KEY `url` (`url`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
