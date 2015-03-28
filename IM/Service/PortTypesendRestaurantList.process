@@ -21,6 +21,7 @@
                 <transacted>false</transacted>
                 <acknowledgeMode>1</acknowledgeMode>
                 <maxSessions>1</maxSessions>
+                <destination>q.request.search</destination>
             </SessionAttributes>
             <ConfigurableHeaders>
                 <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
@@ -90,8 +91,8 @@
     <pd:activity name="Send unsortedlist to CRM">
         <pd:type>com.tibco.plugin.jms.JMSQueueRequestReplyActivity</pd:type>
         <pd:resourceType>ae.activities.JMSQueueRequestReplyActivity</pd:resourceType>
-        <pd:x>830</pd:x>
-        <pd:y>81</pd:y>
+        <pd:x>829</pd:x>
+        <pd:y>84</pd:y>
         <config>
             <PermittedMessageType>Text</PermittedMessageType>
             <SessionAttributes>
@@ -111,9 +112,15 @@
                 <replyToQueue>
                     <xsl:value-of select="&quot;q.reply.sortedlist&quot;"/>
                 </replyToQueue>
+                <JMSCorrelationID>
+                    <xsl:value-of select="$Parse-XML-1/root/ns:customer_id"/>
+                </JMSCorrelationID>
                 <Body>
                     <xsl:value-of select="$Send-Region-to-RMS/ns3:ActivityOutput/Body"/>
                 </Body>
+                <DynamicProperties>
+                    <property/>
+                </DynamicProperties>
             </ns3:ActivityInput>
         </pd:inputBindings>
     </pd:activity>
