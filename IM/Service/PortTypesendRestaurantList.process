@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://xmlns.example.com/unique/default/namespace/1134438639124" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://xmlns.example.com/1427451287496" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx2="http://ws.apache.org/axis2" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRegion.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://xmlns.example.com/unique/default/namespace/1134438639124" xmlns:ns3="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://xmlns.example.com/1427451287496" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx3="http://xmlns.example.com/unique/default/namespace/1134438639123" xmlns:pfx2="http://ws.apache.org/axis2" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRegion.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRegion.xsd" schemaLocation="/retrieveRegion.xsd"/>
+    <xsd:import namespace="http://xmlns.example.com/unique/default/namespace/1134438639123" schemaLocation="/restaurant_list.xsd"/>
     <wsdl:import namespace="http://xmlns.example.com/1427451287496" location="/Service/MapPostal.wsdl"/>
     <wsdl:import namespace="http://ws.apache.org/axis2" location="/Service/retrieveRestaurantList.wsdl"/>
     <pd:name>Service/PortTypesendRestaurantList.process</pd:name>
@@ -11,8 +12,8 @@
     <pd:returnBindings/>
     <pd:endName>End</pd:endName>
     <pd:endType wsMsgRef="wsdlPfx:ResponseMessage"/>
-    <pd:endX>679</pd:endX>
-    <pd:endY>64</pd:endY>
+    <pd:endX>1078</pd:endX>
+    <pd:endY>67</pd:endY>
     <pd:errorSchemas/>
     <pd:processVariables/>
     <pd:targetNamespace>http://xmlns.example.com/1427467489773</pd:targetNamespace>
@@ -149,7 +150,7 @@
     <pd:activity name="SOAPRequestReply">
         <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
         <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
-        <pd:x>547</pd:x>
+        <pd:x>548</pd:x>
         <pd:y>72</pd:y>
         <config>
             <timeout>0</timeout>
@@ -179,6 +180,34 @@
             </inputMessage>
         </pd:inputBindings>
     </pd:activity>
+    <pd:activity name="JMS Queue Sender">
+        <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
+        <pd:x>792</pd:x>
+        <pd:y>63</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>q.unsortedlist</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/JMS Connection.sharedjmscon</ConnectionReference>
+        </config>
+        <pd:inputBindings>
+            <ns3:ActivityInput>
+                <Body>
+                    <xsl:value-of select="$SOAPRequestReply/outputMessage/pfx2:retrieveRestaurantDetailsResponse/pfx2:return"/>
+                </Body>
+            </ns3:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
     <pd:transition>
         <pd:from>Start</pd:from>
         <pd:to>Invoke REST API</pd:to>
@@ -196,6 +225,20 @@
     <pd:transition>
         <pd:from>Parse XML</pd:from>
         <pd:to>SOAPRequestReply</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SOAPRequestReply</pd:from>
+        <pd:to>JMS Queue Sender</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JMS Queue Sender</pd:from>
+        <pd:to>End</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
