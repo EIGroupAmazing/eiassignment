@@ -5,22 +5,26 @@
             elementFormDefault="qualified"
             targetNamespace="http://xmlns.example.com/unique/default/namespace/1134438639123"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <xsd:element name="customerID"
-                 type="xsd:string" />
-    <xsd:element name="phoneNumber"
-                 type="xsd:string" />
-    <xsd:element name="email"
-                 type="xsd:string" />
-    <xsd:element name="restaurantList">
+    <xsd:element name="result">
         <xsd:complexType>
-            <xsd:choice>
+            <xsd:sequence>
+                <xsd:element name="customer">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="id"
+                                         type="xsd:string" />
+                            <xsd:element name="email"
+                                         type="xsd:string" />
+                            <xsd:element name="phone"
+                                         type="xsd:string" />
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
                 <xsd:element name="restaurant"
                              minOccurs="0"
                              maxOccurs="unbounded">
                     <xsd:complexType>
                         <xsd:sequence>
-                            <xsd:element name="restaurantName"
-                                         type="xsd:string" />
                             <xsd:element name="packages"
                                          minOccurs="0"
                                          maxOccurs="unbounded">
@@ -35,10 +39,12 @@
                                     </xsd:all>
                                 </xsd:complexType>
                             </xsd:element>
+                            <xsd:element name="name"
+                                         type="xsd:string" />
                         </xsd:sequence>
                     </xsd:complexType>
                 </xsd:element>
-            </xsd:choice>
+            </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
 </xsd:schema>

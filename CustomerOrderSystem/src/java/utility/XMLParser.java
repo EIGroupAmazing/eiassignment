@@ -1,3 +1,4 @@
+package utility;
 import model.Customer;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -6,21 +7,34 @@ import java.util.ArrayList;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import model.Pkg;
+import model.Restaurant;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-public class TestXMLParser extends DefaultHandler {
-    String tmpValue;
-    String xmlStr;
-    String ns = "ns:";
-    Customer cust;
-    ArrayList<Customer> custList;
-    public TestXMLParser(String xmlStr) {
+
+
+public class XMLParser extends DefaultHandler {
+    private String tmpValue;
+    private String xmlStr;
+    private String ns = "ns:";
+    private Customer cust;
+    private Restaurant rest;
+    private Pkg pkg;
+    private ArrayList<Restaurant> restList;
+    
+    
+    public XMLParser(String xmlStr) {
         this.xmlStr = xmlStr;
-        custList = new ArrayList<Customer>();
+        restList = new ArrayList<Restaurant>();
         parseDocument();
-        printDatas();
         
+    }
+    public Object[] getParsingResult(){
+        Object[] toreturn = new Object[2];
+        toreturn[0] = cust;
+        toreturn[1] = restList;
+        return toreturn;
     }
     private void parseDocument() {
         // parse
@@ -41,17 +55,27 @@ public class TestXMLParser extends DefaultHandler {
     public void startElement(String s, String s1, String elementName, Attributes attributes) throws SAXException {
         // if current element is book , create new book
         // clear tmpValue on start of element
- 
         if (elementName.equalsIgnoreCase(ns+"customer")) {
             cust = new Customer();
         }
+        if (elementName.equalsIgnoreCase(ns+"restaurant")) {
+            rest = new Restaurant();
+            rest.setPkgList(new ArrayList<Pkg>());
+        }
+        if (elementName.equalsIgnoreCase(ns+"packages")) {
+            pkg = new Pkg();
+        }
+ 
 
     }
     @Override
     public void endElement(String s, String s1, String element) throws SAXException {
         // if end of book element add to list
-        if (element.equals(ns+"customer")) {
-            custList.add(cust);
+        if (element.equals(ns+"restaurant")) {
+            restList.add(rest);
+        }
+        if (element.equals(ns+"packages")) {
+            rest.addPkg(pkg);
         }
         // if current element is publisher
         if (element.equalsIgnoreCase(ns+"email")) {
@@ -62,6 +86,18 @@ public class TestXMLParser extends DefaultHandler {
         }
         if (element.equalsIgnoreCase(ns+"id")) {
             cust.setId(tmpValue);
+        }
+        if (element.equalsIgnoreCase(ns+"name")) {
+            rest.setName(tmpValue);
+        }
+        if (element.equalsIgnoreCase(ns+"package_name")) {
+            pkg.setName(tmpValue);
+        }
+        if (element.equalsIgnoreCase(ns+"package_detail")) {
+            pkg.setDetail(tmpValue);
+        }
+        if (element.equalsIgnoreCase(ns+"package_price")) {
+            pkg.setPrice(tmpValue);
         }
     }
     @Override

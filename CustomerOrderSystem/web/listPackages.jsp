@@ -4,6 +4,8 @@
     Author     : Alex
 --%>
 
+<%@page import="model.Pkg"%>
+<%@page import="model.Restaurant"%>
 <%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -18,15 +20,22 @@
     <%
 
         if (request.getAttribute("message")!=null){
-            ArrayList<String[]> packages = (ArrayList)request.getAttribute("message");
-            for(int i=0;i<packages.size();i++){
-                String[] currentRestaurant = packages.get(i);
+            ArrayList<Restaurant> restList = (ArrayList<Restaurant>)request.getAttribute("message");
+            for(int i=0;i<restList.size();i++){
+                Restaurant currentRestaurant = restList.get(i);
+                String restName = currentRestaurant.getName();
+                ArrayList<Pkg> pkgList = currentRestaurant.getPkgList();
                 %>
-                <b><%=currentRestaurant[0]%></b><br>
-                <%for(int j=1;j<currentRestaurant.length;j++){%>
-                    <input type="checkbox" name="package" value="<%=currentRestaurant[0]%>/<%=currentRestaurant[j]%>"><%=currentRestaurant[j]%><br>
-                    package price<br>
-                    package description<br>
+                <b><%=restName%></b><br>
+                <%for(int j=1;j<pkgList.size();j++){
+                    Pkg currentPkg = pkgList.get(j);
+                    String pkgName = currentPkg.getName();
+                    String pkgDetail = currentPkg.getDetail();
+                    String pkgPrice = currentPkg.getPrice();
+                %>
+                    <input type="checkbox" name="package" value="<%=restName%>/<%=pkgName%>"><%=pkgName%><br>
+                    Package price : <%=pkgPrice%><br>
+                    Package description : <%=pkgDetail%><br>
                 <%}%>
                 <%
             }
