@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid XML 2014 Developer Bundle Edition (Education) 12.2.8.5459 (http://www.liquid-technologies.com) -->
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="GeocodeResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="status" type="xs:string" />
+        <xs:element minOccurs="0" name="result">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="type" type="xs:string" />
+              <xs:element minOccurs="0" name="formatted_address" type="xs:string" />
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="address_component">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" name="long_name" type="xs:string" />
+                    <xs:element minOccurs="0" name="short_name" type="xs:string" />
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="type" type="xs:string" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element minOccurs="0" name="geometry">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" name="location">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element minOccurs="0" name="lat" type="xs:decimal" />
+                          <xs:element minOccurs="0" name="lng" type="xs:decimal" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element minOccurs="0" name="location_type" type="xs:string" />
+                    <xs:element minOccurs="0" name="viewport">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element minOccurs="0" name="southwest">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element minOccurs="0" name="lat" type="xs:decimal" />
+                                <xs:element minOccurs="0" name="lng" type="xs:decimal" />
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element minOccurs="0" name="northeast">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element minOccurs="0" name="lat" type="xs:decimal" />
+                                <xs:element minOccurs="0" name="lng" type="xs:decimal" />
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element minOccurs="0" name="place_id" type="xs:string" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -18,8 +18,8 @@
             <property key="wsdlresource.palette.version" value="5.11.0"/>
             <property key="ae.process.palette.version" value="5.11.0"/>
             <property key="wadlresource.palette.version" value="1.0.0.00"/>
-            <property key="ae.palette.JDBCpalette.version" value="5.11.0"/>
             <property key="httppalette.httpplugins.version" value="5.11.0"/>
+            <property key="ae.palette.JDBCpalette.version" value="5.11.0"/>
             <property key="ae.palette.parsepalette.version" value="5.11.0"/>
             <property key="ae.designerapp.version" value="5.8.0.10"/>
             <property key="ae.repo.palette.version" value="5.3.0"/>
