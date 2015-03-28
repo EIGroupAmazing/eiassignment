@@ -15,11 +15,6 @@
     <body>
         <h1>Hello World!</h1>
         <form action="/take-order" method="post">
-
-  Bike
-  <input type="checkbox" name="package" value="Car"> I have a car<br>
-  <input type="submit" value="Submit">
-</form>
     <%
 
         if (request.getAttribute("message")!=null){
@@ -28,17 +23,17 @@
                 String[] currentRestaurant = packages.get(i);
                 %>
                 <b><%=currentRestaurant[0]%></b><br>
-                <input type="checkbox" name="package" value="<%=currentRestaurant[0]%>/<%=currentRestaurant[j]%>"><%=currentRestaurant[j]%><br>
-    
-                <%
-                for(int j=1;j<currentRestaurant.length;j++){
-                    out.println("<li>"+currentRestaurant[j]+"</li>");
-                }
-                %>
+                <%for(int j=1;j<currentRestaurant.length;j++){%>
+                    <input type="checkbox" name="package" value="<%=currentRestaurant[0]%>/<%=currentRestaurant[j]%>"><%=currentRestaurant[j]%><br>
+                    package price<br>
+                    package description<br>
+                <%}%>
                 <%
             }
         }
     %>
+        
+      <input type="submit" value="Submit">
     </form>
     </body>
 </html>
