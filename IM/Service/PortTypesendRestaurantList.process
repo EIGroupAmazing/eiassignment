@@ -12,15 +12,15 @@
     <pd:returnBindings/>
     <pd:endName>End</pd:endName>
     <pd:endType wsMsgRef="wsdlPfx:ResponseMessage"/>
-    <pd:endX>1078</pd:endX>
-    <pd:endY>67</pd:endY>
+    <pd:endX>884</pd:endX>
+    <pd:endY>68</pd:endY>
     <pd:errorSchemas/>
     <pd:processVariables/>
     <pd:targetNamespace>http://xmlns.example.com/1427467489773</pd:targetNamespace>
     <pd:activity name="Invoke REST API">
         <pd:type>com.tibco.plugin.json.activities.RestActivity</pd:type>
         <pd:resourceType>ae.activities.RestActivity</pd:resourceType>
-        <pd:x>268</pd:x>
+        <pd:x>288</pd:x>
         <pd:y>66</pd:y>
         <config>
             <restMethodUI>GET</restMethodUI>
@@ -150,8 +150,8 @@
     <pd:activity name="SOAPRequestReply">
         <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
         <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
-        <pd:x>548</pd:x>
-        <pd:y>72</pd:y>
+        <pd:x>554</pd:x>
+        <pd:y>69</pd:y>
         <config>
             <timeout>0</timeout>
             <soapAttachmentStyle>SwA</soapAttachmentStyle>
@@ -183,15 +183,15 @@
     <pd:activity name="JMS Queue Sender">
         <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
         <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
-        <pd:x>792</pd:x>
-        <pd:y>63</pd:y>
+        <pd:x>720</pd:x>
+        <pd:y>81</pd:y>
         <config>
             <PermittedMessageType>Text</PermittedMessageType>
             <SessionAttributes>
                 <transacted>false</transacted>
                 <acknowledgeMode>1</acknowledgeMode>
                 <maxSessions>1</maxSessions>
-                <destination>q.unsortedlist</destination>
+                <destination>q.request.unsortedlist</destination>
             </SessionAttributes>
             <ConfigurableHeaders>
                 <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
@@ -205,6 +205,16 @@
                 <Body>
                     <xsl:value-of select="$SOAPRequestReply/outputMessage/pfx2:retrieveRestaurantDetailsResponse/pfx2:return"/>
                 </Body>
+                <DynamicProperties>
+                    <property>
+                        <name>
+                            <xsl:value-of select="&quot;Customer_id&quot;"/>
+                        </name>
+                        <value>
+                            <xsl:value-of select="$Start/wsdlPfx:RequestMessage/part1/ns:search_creteria/ns:customer_id"/>
+                        </value>
+                    </property>
+                </DynamicProperties>
             </ns3:ActivityInput>
         </pd:inputBindings>
     </pd:activity>
