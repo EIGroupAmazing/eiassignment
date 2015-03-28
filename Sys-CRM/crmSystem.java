@@ -1,50 +1,10 @@
-/*
- * =================================================================
- * Copyright (c) 2001-2003 TIBCO Software Inc.
- * All rights reserved.
- * For more information, please contact:
- * TIBCO Software Inc., Palo Alto, California, USA
- *
- * $RCSfile: tibjmsMsgConsumer.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/02/06 00:05:02 $
- * =================================================================
- */
-
-/*
- * This is a simple sample of a basic tibjmsMsgConsumer.
- *
- * This sampe subscribes to specified destination and
- * receives and prints all received messages.
- *
- * Notice that the specified destination should exist in your configuration
- * or your topics/queues configuration file should allow
- * creation of the specified destination.
- *
- * If this sample is used to receive messages published by
- * tibjmsMsgProducer sample, it must be started prior
- * to running the tibjmsMsgProducer sample.
- *
- * Usage:  java tibjmsMsgConsumer [options]
- *
- *    where options are:
- *
- *      -server     Server URL.
- *                  If not specified this sample assumes a
- *                  serverUrl of "tcp://localhost:7222"
- *
- *      -user       User name. Default is null.
- *      -password   User password. Default is null.
- *      -topic      Topic name. Default is "topic.sample"
- *      -queue      Queue name. No default
- *
- *
- */
-
+import java.util.*;
+import java.io.*;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import javax.jms.*;
-
-public class crmSystem
-        implements ExceptionListener {
+public class crmSystem implements ExceptionListener {
     /*-----------------------------------------------------------------------
      * Parameters
      *----------------------------------------------------------------------*/
@@ -58,7 +18,7 @@ public class crmSystem
     /*-----------------------------------------------------------------------
     * Variables
     *----------------------------------------------------------------------*/
-    Connection connection = null;
+    javax.jms.Connection connection = null;
     Session session = null;
     MessageConsumer msgConsumer = null;
     Destination destination = null;
@@ -211,7 +171,7 @@ public class crmSystem
      * main
      *----------------------------------------------------------------------*/
     public static void main(String[] args) {
-        new tibjmsMsgRRConsumer(args);
+        new crmSystem(args);
     }
 
     // Handle the message when received.
@@ -226,15 +186,16 @@ public class crmSystem
                 System.out.println("\tCorrel. ID: " + requestMessage.getJMSCorrelationID());
                 System.out.println("\tReply to:   " + requestMessage.getJMSReplyTo());
                 System.out.println("\tContents:   " + requestMessage.getText());
-
+                
+                
+                String unsortedList = retrieveRestaurantDetails(requestMessage.getText());
+   
                 // Prepare reply message and send reply message
-                String contents = requestMessage.getText();
                 Destination replyDestination = message.getJMSReplyTo();
                 MessageProducer replyProducer = session.createProducer(replyDestination);
-
                 TextMessage replyMessage = session.createTextMessage();
                 // Hardcoded the replyMessage to for this example.
-                replyMessage.setText("Request received and queued successfully.");
+                replyMessage.setText(unsortedList);
                 replyMessage.setJMSCorrelationID(requestMessage.getJMSMessageID());
                 // sending reply message.
                 replyProducer.send(replyMessage);
@@ -260,4 +221,67 @@ public class crmSystem
             e.printStackTrace();
         }
     }
+    
+    
+    
+    public String sortRestaurants (String unsortedList,String cid) {
+
+        
+        String dbURL = "jdbc:mysql://localhost:3306/customer_info";
+        String userName = "root";
+        String password = "";
+        java.sql.Connection dbConn = null;
+        ResultSet rs = null;
+        HashMap<String, Integer> reference = new HashMap<String, Integer>();
+        
+        
+        String sql1 = "SELECT * FROM order where customer_id =' " + cid "'";
+        StringBuffer outputXML = new StringBuffer();
+        //outputXML.append("<?xml version='1.0' encoding='UTF-8'?>");
+		// outputXML.append("<customerID>" +cid +"</customerID>");
+        // outputXML.append("<phoneNumber>" +pn +"</phoneNumber>");
+        // outputXML.append("<email>" +email +"</email>");
+        
+        try{
+            // Connection to database "international_pets_database" with authentication details in "userName"
+            // and "password"
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            dbConn = DriverManager.getConnection(dbURL, userName, password);
+            
+            Statement statement = dbConn.createStatement();
+            if(statement.execute(sql1)){
+                rs = statement.getResultSet();
+            }
+            
+            while (rs.next()){
+                String restaurant_name = rs.getString(3);
+                if (!reference.conatainsKey(restaurant_name)){
+                    reference.put(restaurant_name,1);
+                }else{
+                    reference.put(restaurant_name,reference.get(restaurant_name)+1);
+                }
+                
+            }
+            
+           
+            
+        } catch(Exception e){
+            e.printStackTrace();
+        } finally {
+            try {
+                if (dbConn != null) {
+                    dbConn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+
+        return (outputXML.toString());  
+    }
+    
+    
+    
+    
 }

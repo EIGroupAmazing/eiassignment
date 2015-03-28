@@ -4,9 +4,10 @@
 	 targetNamespace = "http://xmlns.example.com/unique/default/namespace/1134438639123"
 	 xmlns:xsd = "http://www.w3.org/2001/XMLSchema"
 	 elementFormDefault = "qualified">
-    <xsd:element name="restaurant_list">
-        <xsd:complexType>
-            <xsd:sequence>
+<xsd:element name="customerID"  type="xsd:string"/>
+<xsd:element name="phoneNumber"  type="xsd:string"/>
+<xsd:element name="email"  type="xsd:string"/>
+        
                 <xsd:element name="restaurant"
                              maxOccurs="unbounded">
                     <xsd:complexType>
@@ -30,7 +31,6 @@
                         </xsd:sequence>
                     </xsd:complexType>
                 </xsd:element>
-            </xsd:sequence>
-        </xsd:complexType>
-    </xsd:element>
+
+
 </xsd:schema>

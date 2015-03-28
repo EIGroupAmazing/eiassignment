@@ -3,7 +3,7 @@ import java.io.*;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
+import javax.jms.*;
 public class restaurantManagementSystem implements ExceptionListener {
     /*-----------------------------------------------------------------------
      * Parameters
@@ -37,7 +37,7 @@ public class restaurantManagementSystem implements ExceptionListener {
 
         /* print parameters */
         System.err.println("\n------------------------------------------------------------------------");
-        System.err.println("Customer Relationship Management System");
+        System.err.println("Restaurant Management System");
         System.err.println("------------------------------------------------------------------------");
         System.err.println("Server....................... " + ((serverUrl != null) ? serverUrl : "localhost"));
         System.err.println("User......................... " + ((userName != null) ? userName : "(null)"));
@@ -189,10 +189,7 @@ public class restaurantManagementSystem implements ExceptionListener {
                 
                 
                 String unsortedList = retrieveRestaurantDetails(requestMessage.getText());
-                
-                
-                
-                
+   
                 // Prepare reply message and send reply message
                 Destination replyDestination = message.getJMSReplyTo();
                 MessageProducer replyProducer = session.createProducer(replyDestination);
@@ -245,7 +242,10 @@ public class restaurantManagementSystem implements ExceptionListener {
         String sql1 = "SELECT * FROM deliveryscope d, restaurant r WHERE d.restaurantName = r.restaurantName AND openTime <=  '"+time+"' AND closeTime >=  '"+time+"' AND d.region =  '"+region+"'";
         StringBuffer outputXML = new StringBuffer();
         //outputXML.append("<?xml version='1.0' encoding='UTF-8'?>");
-		outputXML.append("<restaurant_list>");
+		// outputXML.append("<customerID>" +cid +"</customerID>");
+        // outputXML.append("<phoneNumber>" +pn +"</phoneNumber>");
+        // outputXML.append("<email>" +email +"</email>");
+        
         try{
             // Connection to database "international_pets_database" with authentication details in "userName"
             // and "password"

@@ -1,33 +1,185 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://xmlns.example.com/unique/default/namespace/1134438639124" xmlns:ns3="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://xmlns.example.com/1427451287496" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx3="http://xmlns.example.com/unique/default/namespace/1134438639123" xmlns:pfx2="http://ws.apache.org/axis2" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRegion.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://xmlns.example.com/unique/default/namespace/1134438639124" xmlns:ns3="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://xmlns.example.com/1427451287496" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx3="http://xmlns.example.com/unique/default/namespace/1134438639123" xmlns:pfx2="http://ws.apache.org/axis2" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRegion.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRegion.xsd" schemaLocation="/retrieveRegion.xsd"/>
     <xsd:import namespace="http://xmlns.example.com/unique/default/namespace/1134438639123" schemaLocation="/restaurant_list.xsd"/>
+    <xsd:import namespace="http://xmlns.example.com/unique/default/namespace/1134438639124" schemaLocation="/search_creteria.xsd"/>
     <wsdl:import namespace="http://xmlns.example.com/1427451287496" location="/Service/MapPostal.wsdl"/>
     <wsdl:import namespace="http://ws.apache.org/axis2" location="/Service/retrieveRestaurantList.wsdl"/>
     <pd:name>Service/PortTypesendRestaurantList.process</pd:name>
-    <pd:startName>Start</pd:startName>
-    <pd:startType wsMsgRef="wsdlPfx:RequestMessage"/>
-    <pd:startX>150</pd:startX>
-    <pd:startY>65</pd:startY>
+    <pd:startName>JMS Queue Receiver</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
     <pd:returnBindings/>
+    <pd:starter name="JMS Queue Receiver">
+        <pd:type>com.tibco.plugin.jms.JMSQueueEventSource</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueEventSource</pd:resourceType>
+        <pd:x>65</pd:x>
+        <pd:y>85</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
     <pd:endName>End</pd:endName>
     <pd:endType wsMsgRef="wsdlPfx:ResponseMessage"/>
-    <pd:endX>887</pd:endX>
-    <pd:endY>77</pd:endY>
+    <pd:endX>1121</pd:endX>
+    <pd:endY>75</pd:endY>
     <pd:errorSchemas/>
     <pd:processVariables/>
     <pd:targetNamespace>http://xmlns.example.com/1427467489773</pd:targetNamespace>
+    <pd:activity name="Parse XML">
+        <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
+        <pd:x>515</pd:x>
+        <pd:y>71</pd:y>
+        <config>
+            <inputStyle>text</inputStyle>
+            <xsdVersion>default</xsdVersion>
+            <validateOutput>true</validateOutput>
+            <term ref="pfx:GeocodeResponse"/>
+        </config>
+        <pd:inputBindings>
+            <xmlString>
+                <xsl:value-of select="$Invoke-REST-API/ns2:RESTOutput/msg"/>
+            </xmlString>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Send Region to RMS">
+        <pd:type>com.tibco.plugin.jms.JMSQueueRequestReplyActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueRequestReplyActivity</pd:resourceType>
+        <pd:x>667</pd:x>
+        <pd:y>74</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>q.request.region</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+        </config>
+        <pd:inputBindings>
+            <ns3:ActivityInput>
+                <replyToQueue>
+                    <xsl:value-of select="&quot;q.reply.region&quot;"/>
+                </replyToQueue>
+                <Body>
+                    <xsl:value-of select="$Parse-XML/GeocodeResponse/result/address_component[2]/long_name"/>
+                </Body>
+                <DynamicProperties>
+                    <property/>
+                </DynamicProperties>
+            </ns3:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Send unsortedlist to CRM">
+        <pd:type>com.tibco.plugin.jms.JMSQueueRequestReplyActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueRequestReplyActivity</pd:resourceType>
+        <pd:x>830</pd:x>
+        <pd:y>81</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>q.request.sortedlist</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+        </config>
+        <pd:inputBindings>
+            <ns3:ActivityInput>
+                <replyToQueue>
+                    <xsl:value-of select="&quot;q.reply.sortedlist&quot;"/>
+                </replyToQueue>
+                <Body>
+                    <xsl:value-of select="$Send-Region-to-RMS/ns3:ActivityOutput/Body"/>
+                </Body>
+            </ns3:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="JMS Queue Sender">
+        <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
+        <pd:x>1014</pd:x>
+        <pd:y>82</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>q.request.restaurantlist</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+        </config>
+        <pd:inputBindings>
+            <ns3:ActivityInput>
+                <Body>
+                    <xsl:value-of select="$Send-unsortedlist-to-CRM/ns3:ActivityOutput/Body"/>
+                </Body>
+            </ns3:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Parse-XML-1">
+        <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
+        <pd:x>186</pd:x>
+        <pd:y>84</pd:y>
+        <config>
+            <inputStyle>text</inputStyle>
+            <xsdVersion>default</xsdVersion>
+            <validateOutput>true</validateOutput>
+            <term>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element ref="ns:customer_id"/>
+                            <xsd:element ref="ns:postal_code"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </term>
+        </config>
+        <pd:inputBindings>
+            <xmlString>
+                <xsl:value-of select="$JMS-Queue-Receiver/ns3:ActivityOutput/Body"/>
+            </xmlString>
+        </pd:inputBindings>
+    </pd:activity>
     <pd:activity name="Invoke REST API">
         <pd:type>com.tibco.plugin.json.activities.RestActivity</pd:type>
         <pd:resourceType>ae.activities.RestActivity</pd:resourceType>
-        <pd:x>288</pd:x>
-        <pd:y>66</pd:y>
+        <pd:x>353</pd:x>
+        <pd:y>84</pd:y>
         <config>
             <restMethodUI>GET</restMethodUI>
             <restResponseType>XML</restResponseType>
             <authChoiceUI>No Authentication</authChoiceUI>
             <restURI>https://maps.googleapis.com/maps/api/geocode/xml</restURI>
-            <trustAllHostUI>true</trustAllHostUI>
             <restInputReferNode>
                 <xsd:element name="Parameters">
                     <xsd:complexType>
@@ -35,7 +187,7 @@
                             <xsd:element name="Query" minOccurs="0">
                                 <xsd:complexType>
                                     <xsd:sequence>
-                                        <xsd:element name="address" type="xsd:string"/>
+                                        <xsd:element name="param" type="xsd:string"/>
                                     </xsd:sequence>
                                 </xsd:complexType>
                             </xsd:element>
@@ -122,54 +274,51 @@
             <ns2:ActivityInput>
                 <ns2:Parameters>
                     <Query>
-                        <address>
-                            <xsl:value-of select="concat(&quot;Singapore%20&quot;, $Start/wsdlPfx:RequestMessage/part1/ns:search_creteria/ns:postal_code)"/>
-                        </address>
+                        <param>
+                            <xsl:value-of select="concat(&quot;Singapore%20&quot;, $Parse-XML-1/root/ns:postal_code)"/>
+                        </param>
                     </Query>
                 </ns2:Parameters>
             </ns2:ActivityInput>
         </pd:inputBindings>
     </pd:activity>
-    <pd:activity name="Parse XML">
-        <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
-        <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
-        <pd:x>425</pd:x>
-        <pd:y>66</pd:y>
-        <config>
-            <inputStyle>text</inputStyle>
-            <xsdVersion>default</xsdVersion>
-            <validateOutput>true</validateOutput>
-            <term ref="pfx:GeocodeResponse"/>
-        </config>
-        <pd:inputBindings>
-            <xmlString>
-                <xsl:value-of select="$Invoke-REST-API/ns2:RESTOutput/msg"/>
-            </xmlString>
-        </pd:inputBindings>
-    </pd:activity>
-    <pd:activity name="JMS Queue Requestor">
-        <pd:type>com.tibco.plugin.jms.JMSQueueRequestReplyActivity</pd:type>
-        <pd:resourceType>ae.activities.JMSQueueRequestReplyActivity</pd:resourceType>
-        <pd:x>595</pd:x>
-        <pd:y>73</pd:y>
-        <config>
-            <PermittedMessageType>Text</PermittedMessageType>
-            <SessionAttributes>
-                <transacted>false</transacted>
-                <acknowledgeMode>1</acknowledgeMode>
-                <maxSessions>1</maxSessions>
-                <destination>q.</destination>
-            </SessionAttributes>
-            <ConfigurableHeaders>
-                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
-                <JMSExpiration>0</JMSExpiration>
-                <JMSPriority>4</JMSPriority>
-            </ConfigurableHeaders>
-        </config>
-        <pd:inputBindings/>
-    </pd:activity>
     <pd:transition>
-        <pd:from>Start</pd:from>
+        <pd:from>Parse XML</pd:from>
+        <pd:to>Send Region to RMS</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Send Region to RMS</pd:from>
+        <pd:to>Send unsortedlist to CRM</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Send unsortedlist to CRM</pd:from>
+        <pd:to>JMS Queue Sender</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JMS Queue Sender</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JMS Queue Receiver</pd:from>
+        <pd:to>Parse-XML-1</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Parse-XML-1</pd:from>
         <pd:to>Invoke REST API</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
@@ -178,13 +327,6 @@
     <pd:transition>
         <pd:from>Invoke REST API</pd:from>
         <pd:to>Parse XML</pd:to>
-        <pd:lineType>Default</pd:lineType>
-        <pd:lineColor>-16777216</pd:lineColor>
-        <pd:conditionType>always</pd:conditionType>
-    </pd:transition>
-    <pd:transition>
-        <pd:from>Parse XML</pd:from>
-        <pd:to>JMS Queue Requestor</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
