@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,11 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author ky
+ * @author Alex
  */
-
-@WebServlet(urlPatterns = {"/restaurants"})
-public class RestaurantInfoController extends HttpServlet {
+@WebServlet(name = "OrderParingController", urlPatterns = {"/OrderParingController"})
+public class OrderParingController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,24 +34,20 @@ public class RestaurantInfoController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        try{
-            String username = request.getParameter("username");
-            String postalCodeStr = request.getParameter("postalCode");
-            int postalCode = Integer.parseInt(postalCodeStr);
-            //TODO: call Convert to XML
-            //TOTO: Throw XML to EMS sender
-            //TODO: parse returned msl to arraylist
-            ArrayList<String[]> pkgList = new ArrayList();//The returned arraylist message will be stored here
-            request.setAttribute("message",pkgList );
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/restaurantInfoForm.jsp");
-            dispatcher.forward(request,response);
-
-        }catch(NumberFormatException e){
-            request.setAttribute("message","Wrong Input" );
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/restaurantInfoForm.jsp");
-            dispatcher.forward(request,response);
+        try {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet OrderParingController</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet OrderParingController at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        } finally {
+            out.close();
         }
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

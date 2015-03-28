@@ -15,6 +15,11 @@
     <body>
         <h1>Hello World!</h1>
         <ol style="list-style-type:disc">
+<form action="demo_form.asp" method="get">
+  <input type="checkbox" name="vehicle" value="Bike"> I have a bike<br>
+  <input type="checkbox" name="vehicle" value="Car" checked> I have a car<br>
+  <input type="submit" value="Submit">
+</form>
     <%
 
         if (request.getAttribute("message")!=null){

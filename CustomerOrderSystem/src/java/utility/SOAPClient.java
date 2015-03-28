@@ -96,7 +96,17 @@ public class SOAPClient {
         Source sourceContent = soapResponse.getSOAPPart().getContent();
         System.out.print("\nResponse SOAP Message = ");
         StreamResult result = new StreamResult(System.out);
-        transformer.transform(sourceContent, result);
+        //transformer.transform(sourceContent, result);
+		//Source xmlInput = new StreamSource(new StringReader("<!-- Document comment --><aaa><bbb/><ccc/></aaa>"));
+		//StreamResult xmlOutput = new StreamResult(new StringWriter());
+
+		// Configure transformer
+		//Transformer transformer = TransformerFactory.newInstance().newTransformer(); // An identity transformer
+		transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "testing.dtd");
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		//transformer.transform(xmlInput, xmlOutput);
+
+		//System.out.println(xmlOutput.getWriter().toString())
     }
 
 }
