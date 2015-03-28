@@ -16,7 +16,7 @@ public class EMSMessageSender {
     String serverUrl = null;
     String userName = null;
     String password = null;
-    String queueName = "q.request.restaurantlist";
+    String queueName = null;
 
 
     Connection connection = null;
@@ -24,11 +24,14 @@ public class EMSMessageSender {
     Session replySession = null;
     MessageConsumer msgConsumer = null;
     Destination destination = null;
-
+    public EMSMessageSender(String queueName){
+        this.queueName = queueName;
+    }
     public String sendMessage(String xmlInput){
         
         String msgText = null;
         try{
+            //set server URL
             ConnectionFactory factory = new com.tibco.tibjms.TibjmsConnectionFactory(serverUrl);
 
             /* create the connection */
@@ -53,17 +56,21 @@ public class EMSMessageSender {
             
 
             message.setText(xmlInput);
-
             message.setJMSReplyTo(session.createTemporaryQueue());
+            
             producer.send(message);
             
-            //-------------receive
+            //-------------receive message
             TextMessage replyMsg = (TextMessage)rplConsumer.receive();
             msgText = replyMsg.getText();
+            
+            session.close();
+            connection.close();
         }catch(JMSException exc){
             exc.printStackTrace();
         }
         return msgText;
     }
+    
 
 }

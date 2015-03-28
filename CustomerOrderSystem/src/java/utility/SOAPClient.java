@@ -22,7 +22,7 @@ public class SOAPClient {
     /**
      * Starting point for the SAAJ - SOAP Client Testing
      */
-    public static void main(String args[]) {
+    public static void run(String args[]) {
         try {
             // Create SOAP Connection
             SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();

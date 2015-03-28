@@ -13,12 +13,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author Alex
  */
-@WebServlet(name = "OrderParingController", urlPatterns = {"/OrderParingController"})
+@WebServlet(name = "OrderParingController", urlPatterns = {"/take-order"})
 public class OrderParsingController extends HttpServlet {
 
     /**
@@ -35,16 +36,16 @@ public class OrderParsingController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet OrderParingController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet OrderParingController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+            String[] pkg = request.getParameterValues("package");
+            if(pkg.length!=0){
+                
+            }
+            HttpSession session = request.getSession();
+            String customerId = (String)session.getAttribute("customerid");
+            String email = (String)session.getAttribute("email");
+            String phone = (String)session.getAttribute("phone");
+            //ArrayList<package> pkgList = (String) session.getAttribute();
+            
         } finally {
             out.close();
         }
