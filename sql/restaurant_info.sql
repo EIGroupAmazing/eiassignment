@@ -104,6 +104,53 @@ INSERT INTO `package` (`packageName`, `Price`, `RestaurantName`, `Description`) 
 ('Tender Chicken Bundle for 2', 20.5, 'Burger King Burlington Square', '1 BK Long Chicken, 1 Tendergrill Chicken, 2 Medium Onion Rings, 3PC Mexican Drumlets, 2 Taro Turnover, 2 Small Coke'),
 ('Wendy''s Party Solution', 150, 'Wendy''s@Raffles Quay', 'Hot and Juicy Cheese Burger x3\r\nChicken Sensation x3\r\nBaked potatoes x10\r\nchicken nuggets x 48pcs\r\ncut fries  x 5\r\ncan drinks x 20');
 
+
+
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `deliveryscope`
+--
+
+CREATE TABLE IF NOT EXISTS `urlMapping` (
+  `restaurantName` varchar(40) NOT NULL,
+  `url` varchar(40) NOT NULL,
+  PRIMARY KEY (`restaurantName`,`url`),
+  KEY `url` (`url`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `deliveryscope`
+--
+
+INSERT INTO `urlMapping` (`restaurantName`, `url`) VALUES
+('KFC Upper Thomson', 'url1'),
+('4 fingers plaza singapura', 'url2'),
+('Burger King Burlington Square', 'url3'),
+('KFC Singapore - Parklane', 'url4'),
+('Mos Burger - HarbourFront Centre', 'url5'),
+('Popeyes Louisiana Kitchen (The Cathay)', 'url6'),
+('Sakae Sushi (Harbourfront Centre)', 'url7'),
+('Subway Suntec City Mall', 'url8'),
+('Wendy''s@Raffles Quay', 'url9'),
+('McDonald''s Suntec City', 'url10'),
+('PastaMania (United Square)', 'url11'),
+('Subway Suntec City Mall', 'url12'),
+('4 fingers plaza singapura', 'url13'),
+('Burger King Burlington Square', 'url14'),
+('KFC Singapore - Parklane', 'url15'),
+('McDonald''s Suntec City', 'url16'),
+('Mos Burger - HarbourFront Centre', 'url17'),
+('PizzaHut@PlazaSingapura', 'url18'),
+('Popeyes Louisiana Kitchen (The Cathay)', 'url19'),
+('Subway Suntec City Mall', 'url20'),
+('Wendy''s@Raffles Quay', 'url21');
+
+
+
+
 -- --------------------------------------------------------
 
 --

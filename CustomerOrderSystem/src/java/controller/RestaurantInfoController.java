@@ -20,8 +20,11 @@ import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
+import model.Customer;
+import model.Restaurant;
 import org.xml.sax.*;
 import org.w3c.dom.*;
+import utility.XMLParser;
 
 /**
  *
@@ -50,7 +53,7 @@ public class RestaurantInfoController extends HttpServlet {
             String username = request.getParameter("username");
             String postalCodeStr = request.getParameter("postalCode");
             int postalCode = Integer.parseInt(postalCodeStr);
-            String xml = "<search_creteria>"+"<customer_id>"+username
+            String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?><search_creteria>"+"<customer_id>"+username
                     +"</customer_id><postal_code>"+postalCode+"</postal_code></search_creteria>";
             
             //Throw XML to EMS sender
@@ -58,16 +61,19 @@ public class RestaurantInfoController extends HttpServlet {
             String jmsOutput = msgSender.sendMessage(xml);
             
             //TODO: parse returned XMl to object list
-            
+            XMLParser xp = new XMLParser(jmsOutput);
+            Object[] objectOutput = xp.getParsingResult();
+            Customer cust = (Customer)objectOutput[0];
+            ArrayList<Restaurant> restList = (ArrayList<Restaurant>)objectOutput[1];
             
             HttpSession session = request.getSession();
-            session.setAttribute("customerid", "");
-            session.setAttribute("email", "");
-            session.setAttribute("phone","");
+            session.setAttribute("customerid", cust.getId());
+            session.setAttribute("email", cust.getEmail());
+            session.setAttribute("phone",cust.getPhone());
             //session.setAttribute("restaurants",);
             
             ArrayList<String[]> pkgList = new ArrayList();//The returned arraylist message will be stored here
-            request.setAttribute("message",pkgList );
+            request.setAttribute("message",restList );
             RequestDispatcher dispatcher = request.getRequestDispatcher("/restaurantInfoForm.jsp");
             dispatcher.forward(request,response);
 
@@ -78,47 +84,7 @@ public class RestaurantInfoController extends HttpServlet {
         }
         
     }
-    public boolean readXML(String xml){
-        ArrayList<String> rolev;
-        rolev = new ArrayList<String>();
-        Document dom;
-        // Make an  instance of the DocumentBuilderFactory
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        try {
-            // use the factory to take an instance of the document builder
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            // parse using the builder to get the DOM mapping of the    
-            // XML file
-            dom = db.parse(xml);
-
-            Element doc = dom.getDocumentElement();
-
-            role1 = getTextValue(doc, "role1");
-            if (role1 != null) {
-                if (!role1.isEmpty())
-                    rolev.add(role1);
-            }
-
-            return true;
-
-        } catch (ParserConfigurationException pce) {
-            System.out.println(pce.getMessage());
-        } catch (SAXException se) {
-            System.out.println(se.getMessage());
-        } catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
-        }
-        return true;
-    }
-    private String getTextValue(Element doc, String tag) {
-        String value = null;
-        NodeList nl;
-        nl = doc.getElementsByTagName(tag);
-        if (nl.getLength() > 0 && nl.item(0).hasChildNodes()) {
-            value = nl.item(0).getFirstChild().getNodeValue();
-        }
-        return value;
-    }
+    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
