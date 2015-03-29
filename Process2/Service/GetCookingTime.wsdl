@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:ns1="http://org.apache.axis2/xsd" xmlns:ns="http://ws.apache.org/axis2" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://ws.apache.org/axis2">
+    <wsdl:documentation>GetCookingTime</wsdl:documentation>
+    <wsdl:types>
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/axis2">
+            <xs:element name="generate">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="args0" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="generateResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="generateRequest">
+        <wsdl:part name="parameters" element="ns:generate"/>
+    </wsdl:message>
+    <wsdl:message name="generateResponse">
+        <wsdl:part name="parameters" element="ns:generateResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="GetCookingTimePortType">
+        <wsdl:operation name="generate">
+            <wsdl:input message="ns:generateRequest" wsaw:Action="urn:generate"/>
+            <wsdl:output message="ns:generateResponse" wsaw:Action="urn:generateResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="GetCookingTimeSoap11Binding" type="ns:GetCookingTimePortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="generate">
+            <soap:operation soapAction="urn:generate" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="GetCookingTimeSoap12Binding" type="ns:GetCookingTimePortType">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="generate">
+            <soap12:operation soapAction="urn:generate" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="GetCookingTimeHttpBinding" type="ns:GetCookingTimePortType">
+        <http:binding verb="POST"/>
+        <wsdl:operation name="generate">
+            <http:operation location="generate"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="GetCookingTime">
+        <wsdl:port name="GetCookingTimeHttpSoap11Endpoint" binding="ns:GetCookingTimeSoap11Binding">
+            <soap:address location="http://localhost:8080/axis2/services/GetCookingTime.GetCookingTimeHttpSoap11Endpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="GetCookingTimeHttpSoap12Endpoint" binding="ns:GetCookingTimeSoap12Binding">
+            <soap12:address location="http://localhost:8080/axis2/services/GetCookingTime.GetCookingTimeHttpSoap12Endpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="GetCookingTimeHttpEndpoint" binding="ns:GetCookingTimeHttpBinding">
+            <http:address location="http://localhost:8080/axis2/services/GetCookingTime.GetCookingTimeHttpEndpoint/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
