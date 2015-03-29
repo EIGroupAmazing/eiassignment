@@ -21,7 +21,7 @@
             %>
         </p>
         <form method="get" action="restaurants">
-            <fieldset   stype="width: 50%; height: 50%;">
+            <fieldset>
             <legend>Search Food Packages</legend>
             <input type="text" name="username" placeholder="Customer ID">
             <input type="text" name="postalCode" placeholder="Delivery Postal Code">

@@ -50,8 +50,8 @@ public class RestaurantRetrievalController extends HttpServlet {
                     +"</customer_id><postal_code>"+postalCode+"</postal_code></search_creteria>";
             
             //Throw XML to EMS sender
-            EMSMessageSender msgSender = new EMSMessageSender("q.request.restaurantlist");
-            //String jmsOutput = msgSender.sendMessage(xml);
+            EMSMessageSender msgSender = new EMSMessageSender("q.request.search");
+            //String jmsOutput = msgSender.sendMessage(xml,true);
             String jmsOutput = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 "<!-- Created with Liquid XML 2014 Developer Bundle Edition (Education) 12.2.8.5459 (http://www.liquid-technologies.com) -->\n" +
 "<ns:result xmlns:ns=\"http://xmlns.example.com/unique/default/namespace/1134438639123\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://xmlns.example.com/unique/default/namespace/1134438639123 file:///C:/Users/Alex/Downloads/Telegram%20Desktop/restaurant_list.xsd\">\n" +

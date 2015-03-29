@@ -13,7 +13,7 @@ import javax.jms.TextMessage;
 public class EMSMessageSender {
 
 
-    String serverUrl = null;
+    String serverUrl = "196.108.137.109";
     String userName = null;
     String password = null;
     String queueName = null;
@@ -27,7 +27,7 @@ public class EMSMessageSender {
     public EMSMessageSender(String queueName){
         this.queueName = queueName;
     }
-    public String sendMessage(String xmlInput){
+    public String sendMessage(String xmlInput, boolean reply){
         
         String msgText = null;
         try{
@@ -61,8 +61,10 @@ public class EMSMessageSender {
             producer.send(message);
             
             //-------------receive message
-            TextMessage replyMsg = (TextMessage)rplConsumer.receive();
-            msgText = replyMsg.getText();
+            if (reply){
+                TextMessage replyMsg = (TextMessage)rplConsumer.receive();
+                msgText = replyMsg.getText();
+            }
             
             session.close();
             connection.close();
