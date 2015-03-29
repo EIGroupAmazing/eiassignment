@@ -26,16 +26,16 @@
         <pd:inputBindings/>
     </pd:starter>
     <pd:endName>End</pd:endName>
-    <pd:endX>837</pd:endX>
-    <pd:endY>61</pd:endY>
+    <pd:endX>830</pd:endX>
+    <pd:endY>70</pd:endY>
     <pd:errorSchemas/>
     <pd:processVariables/>
     <pd:targetNamespace>http://xmlns.example.com/1427439955025</pd:targetNamespace>
     <pd:activity name="Render XML">
         <pd:type>com.tibco.plugin.xml.XMLRendererActivity</pd:type>
         <pd:resourceType>ae.activities.XMLRendererActivity</pd:resourceType>
-        <pd:x>579</pd:x>
-        <pd:y>50</pd:y>
+        <pd:x>544</pd:x>
+        <pd:y>69</pd:y>
         <config>
             <renderAsText>binary</renderAsText>
             <validateInput>false</validateInput>
@@ -45,8 +45,8 @@
     <pd:activity name="SOAPRequestReply">
         <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
         <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
-        <pd:x>415</pd:x>
-        <pd:y>61</pd:y>
+        <pd:x>382</pd:x>
+        <pd:y>68</pd:y>
         <config>
             <timeout>0</timeout>
             <soapAttachmentStyle>SwA</soapAttachmentStyle>
@@ -57,8 +57,8 @@
     <pd:activity name="Parse XML">
         <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
         <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
-        <pd:x>274</pd:x>
-        <pd:y>63</pd:y>
+        <pd:x>232</pd:x>
+        <pd:y>68</pd:y>
         <config>
             <inputStyle>binary</inputStyle>
             <xsdVersion>default</xsdVersion>
@@ -69,8 +69,8 @@
     <pd:activity name="JMS Queue Sender">
         <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
         <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
-        <pd:x>705</pd:x>
-        <pd:y>55</pd:y>
+        <pd:x>684</pd:x>
+        <pd:y>69</pd:y>
         <config>
             <PermittedMessageType>Text</PermittedMessageType>
             <SessionAttributes>
