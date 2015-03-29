@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:ns="http://www.tibco.com/ns/no_namespace_schema_location/order.xsd" xmlns:tns="http://xmlns.example.com/1427538568925" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://xmlns.example.com/1427538568925">
+    <import namespace="http://www.tibco.com/ns/no_namespace_schema_location/order.xsd" location="../order.xsd"/>
+    <message name="RequestMessage">
+        <part name="part1" element="ns:Order"/>
+    </message>
+    <portType name="PortType">
+        <operation name="processOrder">
+            <input message="tns:RequestMessage"/>
+        </operation>
+    </portType>
+</definitions>
