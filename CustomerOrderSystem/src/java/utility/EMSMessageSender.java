@@ -62,7 +62,7 @@ public class EMSMessageSender {
             //-------------receive message
             if (reply){
                 System.out.println("Waiting for reply message");
-                TextMessage replyMsg = (TextMessage)rplConsumer.receive(10000);
+                TextMessage replyMsg = (TextMessage)rplConsumer.receive(20000);
                 System.out.println(replyMsg.toString());
                 msgText = replyMsg.getText();
             }

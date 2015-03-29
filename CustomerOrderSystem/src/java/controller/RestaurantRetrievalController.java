@@ -42,7 +42,7 @@ public class RestaurantRetrievalController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            out.println("I'm in here");
+            out.println("Seaching for ");
             String username = request.getParameter("username");
             String postalCodeStr = request.getParameter("postalCode");
             int postalCode = Integer.parseInt(postalCodeStr);
@@ -50,15 +50,14 @@ public class RestaurantRetrievalController extends HttpServlet {
                     +"</customer_id><postal_code>"+postalCode+"</postal_code></search_creteria>";
             System.out.println(xml);
             //Throw XML to EMS sender
-            EMSMessageSender msgSender = new EMSMessageSender("q.request.search");
-            //String jmsOutput = msgSender.sendMessage(xml,true);
-            String jmsOutput = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-"<!-- Created with Liquid XML 2014 Developer Bundle Edition (Education) 12.2.8.5459 (http://www.liquid-technologies.com) -->\n" +
+            EMSMessageSender msgSender = new EMSMessageSender("q.request.search","192.168.137.109");
+            String jmsOutput = msgSender.sendMessage(xml,true);
+            /*String jmsOutput = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 "<ns:result xmlns:ns=\"http://xmlns.example.com/unique/default/namespace/1134438639123\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://xmlns.example.com/unique/default/namespace/1134438639123 file:///C:/Users/Alex/Downloads/Telegram%20Desktop/restaurant_list.xsd\">\n" +
 "    <ns:customer>\n" +
 "        <ns:id>112</ns:id>\n" +
-"        <ns:email>luning1994@gmail.com</ns:email>\n" +
-"        <ns:phone>43123409</ns:phone>\n" +
+"        <ns:email>yx.yuan.2013@sis.smu.edu.sg</ns:email>\n" +
+"        <ns:phone>83572238</ns:phone>\n" +
 "    </ns:customer>\n" +
 "    <ns:restaurant>\n" +
 "        <ns:packages>\n" +
@@ -66,58 +65,11 @@ public class RestaurantRetrievalController extends HttpServlet {
 "            <ns:package_detail>pck1 is good</ns:package_detail>\n" +
 "            <ns:package_price>5094</ns:package_price>\n" +
 "        </ns:packages>\n" +
-"        <ns:name>228083</ns:name>\n" +
-"    </ns:restaurant>\n" +
-"    <ns:restaurant>\n" +
-"        <ns:packages>\n" +
-"            <ns:package_name>pkg3</ns:package_name>\n" +
-"            <ns:package_detail>pkg3 is awesome</ns:package_detail>\n" +
-"            <ns:package_price>2252</ns:package_price>\n" +
-"        </ns:packages>\n" +
-"        <ns:packages>\n" +
-"            <ns:package_name>pkg second</ns:package_name>\n" +
-"            <ns:package_detail>string</ns:package_detail>\n" +
-"            <ns:package_price>3621</ns:package_price>\n" +
-"        </ns:packages>\n" +
-"        <ns:packages>\n" +
-"            <ns:package_name>string</ns:package_name>\n" +
-"            <ns:package_detail>string</ns:package_detail>\n" +
-"            <ns:package_price>2317.7749</ns:package_price>\n" +
-"        </ns:packages>\n" +
-"        <ns:packages>\n" +
-"            <ns:package_name>string</ns:package_name>\n" +
-"            <ns:package_detail>string</ns:package_detail>\n" +
-"            <ns:package_price>1929.794</ns:package_price>\n" +
-"        </ns:packages>\n" +
-"        <ns:name>saffhjka</ns:name>\n" +
-"    </ns:restaurant>\n" +
-"    <ns:restaurant>\n" +
-"        <ns:name>aawifh</ns:name>\n" +
-"    </ns:restaurant>\n" +
-"    <ns:restaurant>\n" +
-"        <ns:packages>\n" +
-"            <ns:package_name>package name</ns:package_name>\n" +
-"            <ns:package_detail>ftaef</ns:package_detail>\n" +
-"            <ns:package_price>9752.734</ns:package_price>\n" +
-"        </ns:packages>\n" +
-"        <ns:packages>\n" +
-"            <ns:package_name>packagename</ns:package_name>\n" +
-"            <ns:package_detail>detail</ns:package_detail>\n" +
-"            <ns:package_price>27.494</ns:package_price>\n" +
-"        </ns:packages>\n" +
-"        <ns:name>rest132</ns:name>\n" +
-"    </ns:restaurant>\n" +
-"    <ns:restaurant>\n" +
-"        <ns:packages>\n" +
-"            <ns:package_name>awef</ns:package_name>\n" +
-"            <ns:package_detail>fhajk</ns:package_detail>\n" +
-"            <ns:package_price>2280.2749</ns:package_price>\n" +
-"        </ns:packages>\n" +
-"        <ns:name>restname</ns:name>\n" +
+"        <ns:name>singapore management university</ns:name>\n" +
 "    </ns:restaurant>\n" +
 "</ns:result>";
-            
-            System.out.println(jmsOutput);
+           */
+            //System.out.println(jmsOutput);
             //TODO: parse returned XMl to object list
             XMLParser xp = new XMLParser(jmsOutput);
             Object[] objectOutput = xp.getParsingResult();

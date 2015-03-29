@@ -8,10 +8,10 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URISyntaxException;
+import java.net.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.*;
 import javax.servlet.RequestDispatcher;
@@ -31,7 +31,7 @@ public class OrderParsingController extends HttpServlet {
 
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, URISyntaxException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
@@ -87,19 +87,10 @@ public class OrderParsingController extends HttpServlet {
                 dispatcher.forward(request,response);
                 
             }else{
-                String fullQuery = "item="+chosenRestName+"&price="+totalPrice;
-                String paymentRequest = new java.net.URI("http", "ezname.heroku.com", "/payments", fullQuery, "").toString();
-                System.out.println("request="+request);
-                HttpClient client = new HttpClient();
-                GetMethod method = new GetMethod(paymentRequest);
+                String fullQuery = "item="+chosenRestName+"&amount="+totalPrice;
 
-                // Send GET request
-                int statusCode = client.executeMethod(method);
-
-                if (statusCode != HttpStatus.SC_OK) {
-                  System.err.println("Method failed: " + method.getStatusLine());
-                }
                 
+                response.sendRedirect("http://ezname.heroku.com/payments?"+fullQuery);
                 
                 String orderXML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
                 orderXML += "<Order><customerId>"+customerId+"</customerId>";
@@ -118,19 +109,23 @@ public class OrderParsingController extends HttpServlet {
                 }
                 orderXML += "</restaurant>";
                 orderXML += "<totalPrice>"+totalPrice+"</totalPrice></Order>";
-                System.out.println(orderXML);
+                session.setAttribute("xml", orderXML);
                 /*
                     Specifying queue name
                 */
+                PrintWriter writer = new PrintWriter("order.xml", "UTF-8");
+                writer.println(orderXML);
+                writer.close();
                 EMSMessageSender emsSender = new EMSMessageSender("q.request.placeorder","192.168.137.254");
-                emsSender.sendMessage(orderXML,false);
+                //emsSender.sendMessage(orderXML,false);
 
-                request.setAttribute("message","Your order is being processed. We will "
-                        + "send you an SMS message and email for delivery time." );
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
-                dispatcher.forward(request,response);
+                //request.setAttribute("message","Your order is being processed. We will "
+                 //       + "send you an SMS message and email for delivery time." );
+                //RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
+                //dispatcher.forward(request,response);
             }
             
+        
         } finally {
             out.close();
         }
