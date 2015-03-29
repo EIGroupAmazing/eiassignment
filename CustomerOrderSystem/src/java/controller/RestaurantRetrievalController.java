@@ -66,7 +66,7 @@ public class RestaurantRetrievalController extends HttpServlet {
 "            <ns:package_detail>pck1 is good</ns:package_detail>\n" +
 "            <ns:package_price>5094</ns:package_price>\n" +
 "        </ns:packages>\n" +
-"        <ns:name>4%20fingers%20plaza%20singapura</ns:name>\n" +
+"        <ns:name>228083</ns:name>\n" +
 "    </ns:restaurant>\n" +
 "    <ns:restaurant>\n" +
 "        <ns:packages>\n" +
