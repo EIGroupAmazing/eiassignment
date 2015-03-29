@@ -48,7 +48,7 @@ public class RestaurantRetrievalController extends HttpServlet {
             int postalCode = Integer.parseInt(postalCodeStr);
             String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?><search_creteria>"+"<customer_id>"+username
                     +"</customer_id><postal_code>"+postalCode+"</postal_code></search_creteria>";
-            
+            System.out.println(xml);
             //Throw XML to EMS sender
             EMSMessageSender msgSender = new EMSMessageSender("q.request.search");
             //String jmsOutput = msgSender.sendMessage(xml,true);
@@ -57,8 +57,8 @@ public class RestaurantRetrievalController extends HttpServlet {
 "<ns:result xmlns:ns=\"http://xmlns.example.com/unique/default/namespace/1134438639123\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://xmlns.example.com/unique/default/namespace/1134438639123 file:///C:/Users/Alex/Downloads/Telegram%20Desktop/restaurant_list.xsd\">\n" +
 "    <ns:customer>\n" +
 "        <ns:id>112</ns:id>\n" +
-"        <ns:email>1234@321.c0m</ns:email>\n" +
-"        <ns:phone>431234</ns:phone>\n" +
+"        <ns:email>luning1994@gmail.com</ns:email>\n" +
+"        <ns:phone>43123409</ns:phone>\n" +
 "    </ns:customer>\n" +
 "    <ns:restaurant>\n" +
 "        <ns:packages>\n" +
@@ -66,7 +66,7 @@ public class RestaurantRetrievalController extends HttpServlet {
 "            <ns:package_detail>pck1 is good</ns:package_detail>\n" +
 "            <ns:package_price>5094</ns:package_price>\n" +
 "        </ns:packages>\n" +
-"        <ns:name>rest1 name</ns:name>\n" +
+"        <ns:name>4%20fingers%20plaza%20singapura</ns:name>\n" +
 "    </ns:restaurant>\n" +
 "    <ns:restaurant>\n" +
 "        <ns:packages>\n" +
@@ -116,6 +116,8 @@ public class RestaurantRetrievalController extends HttpServlet {
 "        <ns:name>restname</ns:name>\n" +
 "    </ns:restaurant>\n" +
 "</ns:result>";
+            
+            System.out.println(jmsOutput);
             //TODO: parse returned XMl to object list
             XMLParser xp = new XMLParser(jmsOutput);
             Object[] objectOutput = xp.getParsingResult();
@@ -127,6 +129,7 @@ public class RestaurantRetrievalController extends HttpServlet {
             session.setAttribute("email", cust.getEmail());
             session.setAttribute("phone",cust.getPhone());
             session.setAttribute("restList",restList);
+            session.setAttribute("postcode",postalCodeStr);
             
             //ArrayList<String[]> pkgList = new ArrayList();//The returned arraylist message will be stored here
             request.setAttribute("message",restList );
