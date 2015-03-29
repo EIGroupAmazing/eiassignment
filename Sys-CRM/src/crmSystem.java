@@ -187,15 +187,25 @@ public class crmSystem implements ExceptionListener {
                 System.out.println("\tReply to:   " + requestMessage.getJMSReplyTo());
                 System.out.println("\tContents:   " + requestMessage.getText());
                 
+                String contentReceived  = requestMessage.getText();
+                String cid = contentReceived.substring(0, contentReceived.indexOf('<'));
+                String unsortedList = contentReceived.substring(contentReceived.indexOf('<'));
+                String sortedList = sortRestaurants(unsortedList,cid);
                 
-                String unsortedList = retrieveRestaurantDetails(requestMessage.getText());
+                
+                
+                
+                
+                
+                
+ 
    
                 // Prepare reply message and send reply message
                 Destination replyDestination = message.getJMSReplyTo();
                 MessageProducer replyProducer = session.createProducer(replyDestination);
                 TextMessage replyMessage = session.createTextMessage();
                 // Hardcoded the replyMessage to for this example.
-                replyMessage.setText(unsortedList);
+                replyMessage.setText(sortedList);
                 replyMessage.setJMSCorrelationID(requestMessage.getJMSMessageID());
                 // sending reply message.
                 replyProducer.send(replyMessage);
@@ -224,23 +234,24 @@ public class crmSystem implements ExceptionListener {
     
     
     
-    public String sortRestaurants (String unsortedList,String cid) {
-
+    public String sortRestaurants(String list,String cid) {
+        StringBuffer unsortedList = new StringBuffer(list);
         
         String dbURL = "jdbc:mysql://localhost:3306/customer_info";
         String userName = "root";
         String password = "";
         java.sql.Connection dbConn = null;
         ResultSet rs = null;
-        HashMap<String, Integer> reference = new HashMap<String, Integer>();
+        LinkedHashMap<String, Integer> rankingReference = new LinkedHashMap<String, Integer>();
         
         
-        String sql1 = "SELECT * FROM order where customer_id =' " + cid "'";
+        String sql1 = "SELECT restaurant_name, COUNT( restaurant_name ) FROM  order WHERE customer_id = '"+cid +"' GROUP BY restaurant_name ORDER BY COUNT( restaurant_name ) ASCD";
+        String sql2 = "SELECT * FROM customer where customer_id =' " + cid + "'";
         StringBuffer outputXML = new StringBuffer();
         //outputXML.append("<?xml version='1.0' encoding='UTF-8'?>");
-		// outputXML.append("<customerID>" +cid +"</customerID>");
-        // outputXML.append("<phoneNumber>" +pn +"</phoneNumber>");
-        // outputXML.append("<email>" +email +"</email>");
+         outputXML.append("<customer>");
+		 outputXML.append("<customerID>" +cid +"</customerID>");
+       
         
         try{
             // Connection to database "international_pets_database" with authentication details in "userName"
@@ -249,20 +260,46 @@ public class crmSystem implements ExceptionListener {
             dbConn = DriverManager.getConnection(dbURL, userName, password);
             
             Statement statement = dbConn.createStatement();
+             if(statement.execute(sql2)){
+                rs = statement.getResultSet();
+                outputXML.append("<phoneNumber>" + rs.getString(2) +"</phoneNumber>");
+                outputXML.append("<email>" +rs.getString(3) +"</email>");
+            }
+         
+           outputXML.append("</customer>");
+           
             if(statement.execute(sql1)){
                 rs = statement.getResultSet();
             }
             
             while (rs.next()){
                 String restaurant_name = rs.getString(3);
-                if (!reference.conatainsKey(restaurant_name)){
-                    reference.put(restaurant_name,1);
+                if (!rankingReference.containsKey(restaurant_name)){
+                    rankingReference.put(restaurant_name,1);
                 }else{
-                    reference.put(restaurant_name,reference.get(restaurant_name)+1);
+                    rankingReference.put(restaurant_name,rankingReference.get(restaurant_name)+1);
                 }
                 
             }
             
+            
+           //outputXML.append("<restaurantList>");
+           List<String> rank = new ArrayList<String>(rankingReference.keySet() );
+           int index = 0;
+           int endIndex =0;
+           for (String s: rank){
+                index = unsortedList.indexOf(s);
+                if(index != -1){
+                    endIndex = unsortedList.indexOf("</restaurant>",index);
+                    String toPop = unsortedList.substring(index, endIndex+14);
+                    unsortedList =unsortedList.delete(index, endIndex+14);
+                    unsortedList.insert(16,toPop);
+                }
+                
+           }
+           outputXML.append(unsortedList);
+           //outputXML.append("</restaurantList>");
+           
            
             
         } catch(Exception e){
