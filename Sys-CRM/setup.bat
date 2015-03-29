@@ -32,7 +32,7 @@ if NOT EXIST %TIBEMS_JAVA%\slf4j-simple-1.4.2.jar goto badenv
 
 set CLASSPATH=%TIBEMS_JAVA%\jms.jar;%CLASSPATH%
 set CLASSPATH=class;%TIBEMS_JAVA%\tibjms.jar;%TIBEMS_JAVA%\tibjmsufo.jar;%TIBEMS_JAVA%\tibcrypt.jar;%TIBEMS_JAVA%\tibjmsadmin.jar;%TIBEMS_JAVA%\slf4j-api-1.4.2.jar;%TIBEMS_JAVA%\slf4j-simple-1.4.2.jar;%TIBEMS_JAVA%\mysql-connector-java-5.1.16-bin.jar;%CLASSPATH%
-javac -d %CLASSPATH% -sourcepath src src/*.java 
+javac -d class -sourcepath src src/*.java 
 
 
 pause
