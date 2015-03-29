@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://xmlns.example.com/unique/default/namespace/1134438639124" xmlns:ns3="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://xmlns.example.com/1427451287496" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx3="http://xmlns.example.com/unique/default/namespace/1134438639123" xmlns:pfx2="http://ws.apache.org/axis2" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRegion.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://xmlns.example.com/unique/default/namespace/1134438639124" xmlns:ns3="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://xmlns.example.com/1427451287496" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx3="http://xmlns.example.com/unique/default/namespace/1134438639123" xmlns:pfx2="http://ws.apache.org/axis2" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRegion.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRegion.xsd" schemaLocation="/retrieveRegion.xsd"/>
     <xsd:import namespace="http://xmlns.example.com/unique/default/namespace/1134438639123" schemaLocation="/restaurant_list.xsd"/>
     <xsd:import namespace="http://xmlns.example.com/unique/default/namespace/1134438639124" schemaLocation="/search_creteria.xsd"/>
@@ -112,11 +112,8 @@
                 <replyToQueue>
                     <xsl:value-of select="&quot;q.reply.sortedlist&quot;"/>
                 </replyToQueue>
-                <JMSCorrelationID>
-                    <xsl:value-of select="$Parse-XML-1/root/ns:customer_id"/>
-                </JMSCorrelationID>
                 <Body>
-                    <xsl:value-of select="$Send-Region-to-RMS/ns3:ActivityOutput/Body"/>
+                    <xsl:value-of select="concat($Parse-XML-1/root/ns:customer_id, $Send-Region-to-RMS/ns3:ActivityOutput/Body)"/>
                 </Body>
                 <DynamicProperties>
                     <property/>

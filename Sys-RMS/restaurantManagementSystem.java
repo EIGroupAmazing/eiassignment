@@ -278,7 +278,7 @@ public class restaurantManagementSystem implements ExceptionListener {
                 }
                 outputXML.append("</restaurant>");
             }
-            outputXML.append("</restaurant_list>");
+
             
         } catch(Exception e){
             e.printStackTrace();
