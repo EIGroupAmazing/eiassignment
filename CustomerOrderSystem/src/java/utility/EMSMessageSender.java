@@ -14,6 +14,8 @@ public class EMSMessageSender {
 
 
     String serverUrl = "196.108.137.109";
+    //String serverUrl = "192.168.137.254";
+    //String serverUrl = "localhost";
     String userName = null;
     String password = null;
     String queueName = null;
@@ -21,48 +23,47 @@ public class EMSMessageSender {
 
     Connection connection = null;
     Session session = null;
-    Session replySession = null;
     MessageConsumer msgConsumer = null;
     Destination destination = null;
     public EMSMessageSender(String queueName){
         this.queueName = queueName;
     }
+    public EMSMessageSender(String queueName,String server){
+        this.queueName = queueName;
+        this.serverUrl =server;
+    }
     public String sendMessage(String xmlInput, boolean reply){
         
         String msgText = null;
         try{
+            System.out.println("Preparing jms sender");
             //set server URL
             ConnectionFactory factory = new com.tibco.tibjms.TibjmsConnectionFactory(serverUrl);
 
-            /* create the connection */
             connection = factory.createConnection(userName, password);
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-
-            /* create the destination */
             destination = session.createQueue(queueName);
-
-            /* create the consumer */
             msgConsumer = session.createConsumer(destination);
-            /* start the connection */
             connection.start();
-            Destination rplDestination = session.createTemporaryQueue();
             destination = session.createQueue(queueName);
-
             MessageProducer producer = session.createProducer(destination);
+            
+            Destination rplDestination = session.createTemporaryQueue();
             MessageConsumer rplConsumer = session.createConsumer(rplDestination);
 
-            TextMessage message = replySession.createTextMessage();
-            
-
+            TextMessage message = session.createTextMessage();
             message.setText(xmlInput);
-            message.setJMSReplyTo(session.createTemporaryQueue());
-            
+            if(reply){
+                message.setJMSReplyTo(session.createTemporaryQueue());
+            }
             producer.send(message);
+            System.out.println(message.toString());
             
             //-------------receive message
             if (reply){
-                TextMessage replyMsg = (TextMessage)rplConsumer.receive();
+                System.out.println("Waiting for reply message");
+                TextMessage replyMsg = (TextMessage)rplConsumer.receive(10000);
+                System.out.println(replyMsg.toString());
                 msgText = replyMsg.getText();
             }
             

@@ -20,7 +20,7 @@
             }
             %>
         </p>
-        <form method="get" action="restaurants">
+        <form method="post" action="restaurants">
             <fieldset>
             <legend>Search Food Packages</legend>
             <input type="text" name="username" placeholder="Customer ID">

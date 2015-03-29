@@ -15,7 +15,13 @@
         <title>Select our premium meal packages</title>
     </head>
     <body>
-        <form action="/take-order" method="post">
+        <%
+            if (request.getAttribute("error")!=null){
+                out.println( (String)request.getAttribute("error"));
+            }
+            %>
+        <form action="take-order" method="post">
+            
     <%
 
         if (request.getAttribute("message")!=null){
@@ -32,7 +38,7 @@
                     String pkgDetail = currentPkg.getDetail();
                     String pkgPrice = currentPkg.getPrice();
                 %>
-                    <input type="checkbox" name="package" value="<%=restName%>/<%=pkgName%>"><%=pkgName%><br>
+                    <input type="checkbox" name="package" value="<%=restName+"\t"%><%=pkgName%>"><%=pkgName%><br>
                     - Package price : <span><%=pkgPrice%></span><br>
                     - Package description : <%=pkgDetail%><br>
                 <%}%>

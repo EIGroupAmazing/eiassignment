@@ -28,6 +28,7 @@
                 <JMSExpiration>0</JMSExpiration>
                 <JMSPriority>4</JMSPriority>
             </ConfigurableHeaders>
+            <ConnectionReference>/JMS Connection.sharedjmscon</ConnectionReference>
         </config>
         <pd:inputBindings/>
     </pd:starter>
@@ -73,6 +74,7 @@
                 <JMSExpiration>0</JMSExpiration>
                 <JMSPriority>4</JMSPriority>
             </ConfigurableHeaders>
+            <ConnectionReference>/JMS Connection.sharedjmscon</ConnectionReference>
         </config>
         <pd:inputBindings>
             <ns3:ActivityInput>
@@ -106,17 +108,15 @@
                 <JMSExpiration>0</JMSExpiration>
                 <JMSPriority>4</JMSPriority>
             </ConfigurableHeaders>
+            <ConnectionReference>/JMS Connection.sharedjmscon</ConnectionReference>
         </config>
         <pd:inputBindings>
             <ns3:ActivityInput>
                 <replyToQueue>
                     <xsl:value-of select="&quot;q.reply.sortedlist&quot;"/>
                 </replyToQueue>
-                <JMSCorrelationID>
-                    <xsl:value-of select="$Parse-XML-1/root/ns:customer_id"/>
-                </JMSCorrelationID>
                 <Body>
-                    <xsl:value-of select="$Send-Region-to-RMS/ns3:ActivityOutput/Body"/>
+                    <xsl:value-of select="concat($Parse-XML-1/root/ns:customer_id, $Send-Region-to-RMS/ns3:ActivityOutput/Body)"/>
                 </Body>
                 <DynamicProperties>
                     <property/>
@@ -142,6 +142,7 @@
                 <JMSExpiration>0</JMSExpiration>
                 <JMSPriority>4</JMSPriority>
             </ConfigurableHeaders>
+            <ConnectionReference>/JMS Connection.sharedjmscon</ConnectionReference>
         </config>
         <pd:inputBindings>
             <ns3:ActivityInput>
