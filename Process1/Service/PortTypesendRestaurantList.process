@@ -122,7 +122,7 @@
     <pd:activity name="JMS Queue Sender">
         <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
         <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
-        <pd:x>1012</pd:x>
+        <pd:x>1011</pd:x>
         <pd:y>87</pd:y>
         <config>
             <PermittedMessageType>Text</PermittedMessageType>
@@ -144,9 +144,6 @@
                 <destinationQueue>
                     <xsl:value-of select="&quot;q.receiveorder&quot;"/>
                 </destinationQueue>
-                <JMSExpiration>
-                    <xsl:value-of select="5000"/>
-                </JMSExpiration>
                 <Body>
                     <xsl:value-of select="$Send-unsortedlist-to-CRM/ns3:ActivityOutput/Body"/>
                 </Body>

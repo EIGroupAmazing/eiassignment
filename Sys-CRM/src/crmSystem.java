@@ -233,7 +233,7 @@ public class crmSystem implements ExceptionListener {
                 System.out.println("\tMessage ID: " + replyMessage.getJMSMessageID());
                 System.out.println("\tCorrel. ID: " + replyMessage.getJMSCorrelationID());
                 System.out.println("\tReply to:   " + replyMessage.getJMSReplyTo());
-                System.out.println("\tContents:   " + replyMessage.getText());
+               // System.out.println("\tContents:   " + replyMessage.getText());
                 System.out.println("\tDestination:" + replyMessage.getJMSDestination());
             } else {
                 System.out.println("Invalid message detected");
@@ -256,7 +256,7 @@ public class crmSystem implements ExceptionListener {
     
     
     public String sortRestaurants(String list,String cid) {
-        StringBuffer unsortedList = new StringBuffer(list);
+        StringBuilder unsortedList = new StringBuilder(list);
         
         String dbURL = "jdbc:mysql://localhost:3306/customer_info";
         String userName = "root";
@@ -270,7 +270,7 @@ public class crmSystem implements ExceptionListener {
         
         String sql2 = "SELECT * FROM customer where customer_id ='" + cid + "'";
         
-        StringBuffer outputXML = new StringBuffer();
+        StringBuilder outputXML = new StringBuilder();
         outputXML.append("<?xml version='1.0' encoding='UTF-8'?>");
         outputXML.append("<result>");
          outputXML.append("<customer>");
@@ -287,7 +287,6 @@ public class crmSystem implements ExceptionListener {
              if(statement.execute(sql2)){
                
                 rs = statement.getResultSet();
-               //System.out.println("-----"+sql2);
             }
               while (rs.next()){
                outputXML.append("<phone>" + rs.getString(2) +"</phone>");
@@ -312,7 +311,7 @@ public class crmSystem implements ExceptionListener {
             }
            List<String> rank = new ArrayList<String>(rankingReference.keySet() );
            System.out.println("--------RESTAURANT[Order Times]------");
-           for(int i=rank.size()-1; i>0; i--){
+           for(int i=rank.size()-1; i>=0; i--){
             System.out.println(rank.get(i)+"[" + rankingReference.get(rank.get(i))+"]");
            
            
@@ -320,16 +319,19 @@ public class crmSystem implements ExceptionListener {
            System.out.println("--------------------------------------");
            int index = 0;
            int endIndex =0;
-           for (String s: rank){
-                index = unsortedList.indexOf(s);
+           //StringBuilder test = unsortedList;
+           String toPop = "";
+           for (int j=0;j<rank.size();j++){
+                index = unsortedList.indexOf(rank.get(j));
                 if(index != -1){
                     endIndex = unsortedList.indexOf("</restaurant>",index);
-                    StringBuffer toPop = new StringBuffer(unsortedList.substring(index-18, endIndex+13));
+                     toPop = toPop.concat(unsortedList.substring(index-18, endIndex+13));
                     unsortedList =unsortedList.delete(index-18, endIndex+13);
-                    unsortedList = toPop.append(unsortedList);
+                    unsortedList = unsortedList.insert(0,toPop);
                 }
                 
            }
+           
            outputXML.append(unsortedList);
            outputXML.append("</result>");
            
