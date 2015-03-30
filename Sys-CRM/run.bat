@@ -1,2 +1,2 @@
-java -cp class;lib/* crmSystem -queue q.request.sortedlist
+java -cp class;lib/* crmSystem -queue q.sendtocrm
 pause

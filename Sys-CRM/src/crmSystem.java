@@ -160,7 +160,7 @@ public class crmSystem implements ExceptionListener {
             if (msg == null)
                 break;
             onMessage(msg);     //karway
-            System.err.println("Received message: " + msg);
+            //System.err.println("Received message: " + msg);
         }
 
         /* close the connection */
@@ -228,12 +228,12 @@ public class crmSystem implements ExceptionListener {
                 replyProducer.send(replyMessage);
                 }
 
-                System.out.println("Sent Sorted list to Customer Oder System..");
+                System.out.println("Sent Sorted list to Customer Order System..");
                 //System.out.println("\tTime:       " + System.currentTimeMillis() + " ms");
                 System.out.println("\tMessage ID: " + replyMessage.getJMSMessageID());
                 System.out.println("\tCorrel. ID: " + replyMessage.getJMSCorrelationID());
                 System.out.println("\tReply to:   " + replyMessage.getJMSReplyTo());
-                //System.out.println("\tContents:   " + replyMessage.getText());
+                System.out.println("\tContents:   " + replyMessage.getText());
                 System.out.println("\tDestination:" + replyMessage.getJMSDestination());
             } else {
                 System.out.println("Invalid message detected");
@@ -305,16 +305,14 @@ public class crmSystem implements ExceptionListener {
             
             while (rs.next()){
                 String restaurant_name = rs.getString(1);
-                if (!rankingReference.containsKey(restaurant_name)){
-                    rankingReference.put(restaurant_name,1);
-                }else{
-                    rankingReference.put(restaurant_name,rankingReference.get(restaurant_name)+1);
-                }
+               
+                    rankingReference.put(restaurant_name,Integer.parseInt(rs.getString(2)));
+               
                 
             }
            List<String> rank = new ArrayList<String>(rankingReference.keySet() );
            System.out.println("--------RESTAURANT[Order Times]------");
-           for(int i=rank.size(); i>0; i++){
+           for(int i=rank.size()-1; i>0; i--){
             System.out.println(rank.get(i)+"[" + rankingReference.get(rank.get(i))+"]");
            
            
