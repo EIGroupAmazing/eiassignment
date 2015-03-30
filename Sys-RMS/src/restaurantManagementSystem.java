@@ -222,7 +222,7 @@ public class restaurantManagementSystem implements ExceptionListener {
                 System.out.println("\tMessage ID: " + replyMessage.getJMSMessageID());
                 System.out.println("\tCorrel. ID: " + replyMessage.getJMSCorrelationID());
                 System.out.println("\tReply to:   " + replyMessage.getJMSReplyTo());
-                System.out.println("\tContents:   " + replyMessage.getText());
+                //System.out.println("\tContents:   " + replyMessage.getText());
                 System.out.println("\tDestination:" + replyMessage.getJMSDestination());
             } else {
                 System.out.println("Invalid message detected");
