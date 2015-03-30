@@ -450,8 +450,8 @@ countryPostCode="Singapore%20"+postCode;}
     <pd:activity name="Send SMS">
         <pd:type>com.tibco.plugin.json.activities.RestActivity</pd:type>
         <pd:resourceType>ae.activities.RestActivity</pd:resourceType>
-        <pd:x>722</pd:x>
-        <pd:y>209</pd:y>
+        <pd:x>753</pd:x>
+        <pd:y>261</pd:y>
         <config>
             <restMethodUI>GET</restMethodUI>
             <restResponseType>Default</restResponseType>
@@ -557,7 +557,7 @@ countryPostCode="Singapore%20"+postCode;}
                 <ns2:Parameters>
                     <Query>
                         <message>
-                            <xsl:value-of select="concat(&quot;Dear customer,&#xA;&#xA;Thanks for ordering from Food Bear. =)&#xA;&#xA;Your order will be ready in &quot;,$SOAPRequestReply-3/outputMessage/pfx5:generateResponse/pfx5:return,&quot; minutes.&#xA;Deliver time: &quot;,$Parse-XML-1/DirectionsResponse/route/leg/duration)"/>
+                            <xsl:value-of select="concat(&quot;Dear customer,&#xA;&#xA;Thanks for ordering from Food Bear. =)&#xA;&#xA;Your order will be ready in &quot;,concat($SOAPRequestReply-1/outputMessage/pfx5:generateResponse/pfx5:return, $SOAPRequestReply-3/outputMessage/pfx5:generateResponse/pfx5:return,$SOAPRequestReply-2/outputMessage/pfx5:generateResponse/pfx5:return),&quot; minutes.&#xA;Deliver time: &quot;,$Parse-XML-1/DirectionsResponse/route/leg/duration)"/>
                         </message>
                         <languagetype>
                             <xsl:value-of select="1"/>
@@ -569,34 +569,14 @@ countryPostCode="Singapore%20"+postCode;}
                             <xsl:value-of select="concat(&quot;65&quot;,$Parse-XML/Order/phoneNumber)"/>
                         </mobileno>
                         <apipassword>
-                            <xsl:value-of select="&quot;APIGXXX0FQ8MGGXXX0&quot;"/>
+                            <xsl:value-of select="&quot;APIL4CSQY22VVL4CSQ&quot;"/>
                         </apipassword>
                         <apiusername>
-                            <xsl:value-of select="&quot;APIGXXX0FQ8MG&quot;"/>
+                            <xsl:value-of select="&quot;APIL4CSQY22VV&quot;"/>
                         </apiusername>
                     </Query>
                 </ns2:Parameters>
             </ns2:ActivityInput>
-        </pd:inputBindings>
-    </pd:activity>
-    <pd:activity name="Write File">
-        <pd:type>com.tibco.plugin.file.FileWriteActivity</pd:type>
-        <pd:resourceType>ae.activities.FileWriteActivity</pd:resourceType>
-        <pd:x>715</pd:x>
-        <pd:y>361</pd:y>
-        <config>
-            <encoding>text</encoding>
-            <compressFile>None</compressFile>
-        </config>
-        <pd:inputBindings>
-            <ns4:WriteActivityInputTextClass>
-                <fileName>
-                    <xsl:value-of select="&quot;C:\Users\t430-kya\Desktop\eiassignment\check.txt&quot;"/>
-                </fileName>
-                <textContent>
-                    <xsl:value-of select="concat($SOAPRequestReply-1/outputMessage/pfx5:generateResponse/pfx5:return, $SOAPRequestReply-3/outputMessage/pfx5:generateResponse/pfx5:return,$SOAPRequestReply-2/outputMessage/pfx5:generateResponse/pfx5:return)"/>
-                </textContent>
-            </ns4:WriteActivityInputTextClass>
         </pd:inputBindings>
     </pd:activity>
     <pd:transition>
@@ -680,14 +660,14 @@ countryPostCode="Singapore%20"+postCode;}
     </pd:transition>
     <pd:transition>
         <pd:from>Send Mail</pd:from>
-        <pd:to>End</pd:to>
+        <pd:to>Send SMS</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
     </pd:transition>
     <pd:transition>
-        <pd:from>Invoke REST API</pd:from>
-        <pd:to>Write File</pd:to>
+        <pd:from>Send SMS</pd:from>
+        <pd:to>End</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
