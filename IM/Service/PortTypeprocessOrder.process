@@ -406,7 +406,7 @@ countryPostCode="Singapore%20"+postCode;}
         <pd:type>com.tibco.plugin.json.activities.RestActivity</pd:type>
         <pd:resourceType>ae.activities.RestActivity</pd:resourceType>
         <pd:x>809</pd:x>
-        <pd:y>237</pd:y>
+        <pd:y>235</pd:y>
         <config>
             <restMethodUI>GET</restMethodUI>
             <restResponseType>Default</restResponseType>
@@ -524,10 +524,10 @@ countryPostCode="Singapore%20"+postCode;}
                             <xsl:value-of select="concat(&quot;65&quot;,$Parse-XML-from-COS/Order/phoneNumber)"/>
                         </mobileno>
                         <apipassword>
-                            <xsl:value-of select="&quot;APIL4CSQY22VVL4CSQ&quot;"/>
+                            <xsl:value-of select="&quot;APIR1NROZBVVQR1NRO&quot;"/>
                         </apipassword>
                         <apiusername>
-                            <xsl:value-of select="&quot;APIL4CSQY22VV&quot;"/>
+                            <xsl:value-of select="&quot;APIR1NROZBVVQ&quot;"/>
                         </apiusername>
                     </Query>
                 </ns2:Parameters>
