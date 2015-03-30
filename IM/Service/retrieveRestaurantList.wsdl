@@ -1,0 +1,80 @@
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:ns="http://ws.apache.org/axis2" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://ws.apache.org/axis2">
+<wsdl:documentation>RetrieveRestaurantList</wsdl:documentation>
+<wsdl:types>
+<xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/axis2">
+<xs:element name="retrieveRestaurantDetails">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="args0" nillable="true" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="retrieveRestaurantDetailsResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="return" nillable="true" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:schema>
+</wsdl:types>
+<wsdl:message name="retrieveRestaurantDetailsRequest">
+<wsdl:part name="parameters" element="ns:retrieveRestaurantDetails"/>
+</wsdl:message>
+<wsdl:message name="retrieveRestaurantDetailsResponse">
+<wsdl:part name="parameters" element="ns:retrieveRestaurantDetailsResponse"/>
+</wsdl:message>
+<wsdl:portType name="RetrieveRestaurantListPortType">
+<wsdl:operation name="retrieveRestaurantDetails">
+<wsdl:input message="ns:retrieveRestaurantDetailsRequest" wsaw:Action="urn:retrieveRestaurantDetails"/>
+<wsdl:output message="ns:retrieveRestaurantDetailsResponse" wsaw:Action="urn:retrieveRestaurantDetailsResponse"/>
+</wsdl:operation>
+</wsdl:portType>
+<wsdl:binding name="RetrieveRestaurantListSoap11Binding" type="ns:RetrieveRestaurantListPortType">
+<soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+<wsdl:operation name="retrieveRestaurantDetails">
+<soap:operation soapAction="urn:retrieveRestaurantDetails" style="document"/>
+<wsdl:input>
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+<wsdl:binding name="RetrieveRestaurantListSoap12Binding" type="ns:RetrieveRestaurantListPortType">
+<soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+<wsdl:operation name="retrieveRestaurantDetails">
+<soap12:operation soapAction="urn:retrieveRestaurantDetails" style="document"/>
+<wsdl:input>
+<soap12:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap12:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+<wsdl:binding name="RetrieveRestaurantListHttpBinding" type="ns:RetrieveRestaurantListPortType">
+<http:binding verb="POST"/>
+<wsdl:operation name="retrieveRestaurantDetails">
+<http:operation location="retrieveRestaurantDetails"/>
+<wsdl:input>
+<mime:content type="text/xml" part="parameters"/>
+</wsdl:input>
+<wsdl:output>
+<mime:content type="text/xml" part="parameters"/>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+<wsdl:service name="RetrieveRestaurantList">
+<wsdl:port name="RetrieveRestaurantListHttpSoap11Endpoint" binding="ns:RetrieveRestaurantListSoap11Binding">
+<soap:address location="http://localhost:8080/axis2/services/RetrieveRestaurantList.RetrieveRestaurantListHttpSoap11Endpoint/"/>
+</wsdl:port>
+<wsdl:port name="RetrieveRestaurantListHttpSoap12Endpoint" binding="ns:RetrieveRestaurantListSoap12Binding">
+<soap12:address location="http://localhost:8080/axis2/services/RetrieveRestaurantList.RetrieveRestaurantListHttpSoap12Endpoint/"/>
+</wsdl:port>
+<wsdl:port name="RetrieveRestaurantListHttpEndpoint" binding="ns:RetrieveRestaurantListHttpBinding">
+<http:address location="http://localhost:8080/axis2/services/RetrieveRestaurantList.RetrieveRestaurantListHttpEndpoint/"/>
+</wsdl:port>
+</wsdl:service>
+</wsdl:definitions>
