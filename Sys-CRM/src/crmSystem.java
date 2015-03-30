@@ -180,29 +180,42 @@ public class crmSystem implements ExceptionListener {
             if ((message instanceof TextMessage) && (message.getJMSReplyTo() != null)) {
                 TextMessage requestMessage = (TextMessage) message;
 
-                System.out.println("Received request");
-                System.out.println("\tTime:       " + System.currentTimeMillis() + " ms");
+                
+                //System.out.println("\tTime:       " + System.currentTimeMillis() + " ms");
                 System.out.println("\tMessage ID: " + requestMessage.getJMSMessageID());
                 System.out.println("\tCorrel. ID: " + requestMessage.getJMSCorrelationID());
                 System.out.println("\tReply to:   " + requestMessage.getJMSReplyTo());
-                System.out.println("\tContents:   " + requestMessage.getText());
-                
-                String contentReceived  = requestMessage.getText();
-                String cid = contentReceived.substring(0, contentReceived.indexOf('<'));
-                String unsortedList = contentReceived.substring(contentReceived.indexOf('<'));
-                System.out.println("---------------------------");
-                System.out.println(cid);
-                System.out.println("---------------------------");
-                String sortedList = sortRestaurants(unsortedList,cid);
+                //System.out.println("\tContents:   " + requestMessage.getText());
                 
                 
                 
                 
+              
                 
+                 String receivedMsg = requestMessage.getText();
+                    String sortedList = null;
+                if(!receivedMsg.contains("<")){
+                    System.out.println("\nReceived Updating request!");
+                    String cid = receivedMsg.substring(0,receivedMsg.indexOf(','));
+                    String rest =receivedMsg.substring(receivedMsg.indexOf(',')+1);
+                    System.out.println("----------------------------------------------------------------------");
+                    System.out.println("Customer id:"+ cid);
+                    System.out.println("Restaurant:"+ rest);
+                    System.out.println("----------------------------------------------------------------------");
+                    insertNew( cid,  rest);
+                    System.out.println("UPDATED!");
                 
-                
- 
-   
+                }else{
+                    String cid = receivedMsg.substring(0, receivedMsg.indexOf('<'));
+                    String unsortedList = receivedMsg.substring(receivedMsg.indexOf('<'));
+                    System.out.println("\nReceived Ranking request from Restaurant Management System!");
+                    System.out.println("----------------------------------------------------------------------");
+                    System.out.println("Customer id:"+ cid);
+                    System.out.println("----------------------------------------------------------------------");
+                    System.out.println("Retrieving Preference........");
+                   sortedList = sortRestaurants(unsortedList,cid);
+                }
+
                 // Prepare reply message and send reply message
                 Destination replyDestination = message.getJMSReplyTo();
                 MessageProducer replyProducer = session.createProducer(replyDestination);
@@ -211,14 +224,16 @@ public class crmSystem implements ExceptionListener {
                 replyMessage.setText(sortedList);
                 replyMessage.setJMSCorrelationID(requestMessage.getJMSMessageID());
                 // sending reply message.
+                if(sortedList!= null){
                 replyProducer.send(replyMessage);
+                }
 
-                System.out.println("Sent reply");
-                System.out.println("\tTime:       " + System.currentTimeMillis() + " ms");
+                System.out.println("Sent Sorted list to Customer Oder System..");
+                //System.out.println("\tTime:       " + System.currentTimeMillis() + " ms");
                 System.out.println("\tMessage ID: " + replyMessage.getJMSMessageID());
                 System.out.println("\tCorrel. ID: " + replyMessage.getJMSCorrelationID());
                 System.out.println("\tReply to:   " + replyMessage.getJMSReplyTo());
-                System.out.println("\tContents:   " + replyMessage.getText());
+                //System.out.println("\tContents:   " + replyMessage.getText());
                 System.out.println("\tDestination:" + replyMessage.getJMSDestination());
             } else {
                 System.out.println("Invalid message detected");
@@ -230,9 +245,12 @@ public class crmSystem implements ExceptionListener {
 
                 message.setJMSCorrelationID(message.getJMSMessageID());
             }
+            
+            
         } catch (JMSException e) {
             e.printStackTrace();
         }
+    
     }
     
     
@@ -272,7 +290,6 @@ public class crmSystem implements ExceptionListener {
                //System.out.println("-----"+sql2);
             }
               while (rs.next()){
-                System.out.println("---------Here!---------");
                outputXML.append("<phone>" + rs.getString(2) +"</phone>");
                 outputXML.append("<email>" +rs.getString(3) +"</email>");
                } 
@@ -295,10 +312,14 @@ public class crmSystem implements ExceptionListener {
                 }
                 
             }
-            
-            
-           //outputXML.append("<restaurantList>");
            List<String> rank = new ArrayList<String>(rankingReference.keySet() );
+           System.out.println("--------RESTAURANT[Order Times]------");
+           for(int i=rank.size(); i>0; i++){
+            System.out.println(rank.get(i)+"[" + rankingReference.get(rank.get(i))+"]");
+           
+           
+           }
+           System.out.println("--------------------------------------");
            int index = 0;
            int endIndex =0;
            for (String s: rank){
@@ -333,6 +354,50 @@ public class crmSystem implements ExceptionListener {
     }
     
     
+    
+    
+    
+    public void insertNew(String cid, String restaurant) {
+
+        
+        String dbURL = "jdbc:mysql://localhost:3306/customer_info";
+        String userName = "root";
+        String password = "";
+        java.sql.Connection dbConn = null;
+        ResultSet rs = null;
+        ArrayList<String> nameList = new ArrayList<String>();
+        
+        
+        String sql = "INSERT INTO  `order`  VALUES ('" + cid +"', CURRENT_TIMESTAMP ,  '"+restaurant+"')";
+
+        try{
+            // Connection to database "international_pets_database" with authentication details in "userName"
+            // and "password"
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            dbConn = DriverManager.getConnection(dbURL, userName, password);
+            
+            Statement statement = dbConn.createStatement();
+            statement.executeUpdate(sql);
+                
+                System.out.println("New order record updated!\n------------------------------------------------------------------------\n");
+                System.out.println("Customer:" + cid);
+                System.out.println("Restaurant:" + restaurant);
+                
+            
+            
+        } catch(Exception e){
+            e.printStackTrace();
+        } finally {
+            try {
+                if (dbConn != null) {
+                    dbConn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
     
     
 }

@@ -179,16 +179,33 @@ public class restaurantManagementSystem implements ExceptionListener {
         try {
             if ((message instanceof TextMessage) && (message.getJMSReplyTo() != null)) {
                 TextMessage requestMessage = (TextMessage) message;
-
-                System.out.println("Received request");
                 System.out.println("\tTime:       " + System.currentTimeMillis() + " ms");
                 System.out.println("\tMessage ID: " + requestMessage.getJMSMessageID());
                 System.out.println("\tCorrel. ID: " + requestMessage.getJMSCorrelationID());
                 System.out.println("\tReply to:   " + requestMessage.getJMSReplyTo());
-                System.out.println("\tContents:   " + requestMessage.getText());
                 
                 
-                String unsortedList = retrieveRestaurantDetails(requestMessage.getText());
+                System.out.println("\nReceived request..........");
+                System.out.println("Retrieving available restaurant to deliver to: " + requestMessage.getText()+"\n");
+                System.out.println("Current available restaurants: ");
+                System.out.println("---------------------------------------------");
+                
+                
+                //System.out.println("\tContents:   " + requestMessage.getText());
+                
+                
+                
+              
+               String unsortedList = retrieveRestaurantDetails(requestMessage.getText());
+                
+                
+                
+                
+                
+                
+                
+                
+                
    
                 // Prepare reply message and send reply message
                 Destination replyDestination = message.getJMSReplyTo();
@@ -200,12 +217,12 @@ public class restaurantManagementSystem implements ExceptionListener {
                 // sending reply message.
                 replyProducer.send(replyMessage);
 
-                System.out.println("Sent reply");
-                System.out.println("\tTime:       " + System.currentTimeMillis() + " ms");
+                System.out.println("Sent to Customer Relationship Management System for sorting!");
+                //System.out.println("\tTime:       " + System.currentTimeMillis() + " ms");
                 System.out.println("\tMessage ID: " + replyMessage.getJMSMessageID());
                 System.out.println("\tCorrel. ID: " + replyMessage.getJMSCorrelationID());
                 System.out.println("\tReply to:   " + replyMessage.getJMSReplyTo());
-                System.out.println("\tContents:   " + replyMessage.getText());
+                //System.out.println("\tContents:   " + replyMessage.getText());
                 System.out.println("\tDestination:" + replyMessage.getJMSDestination());
             } else {
                 System.out.println("Invalid message detected");
@@ -241,21 +258,14 @@ public class restaurantManagementSystem implements ExceptionListener {
         
         String sql1 = "SELECT * FROM deliveryscope d, restaurant r WHERE d.restaurantName = r.restaurantName AND openTime <=  '"+time+"' AND closeTime >=  '"+time+"' AND d.region =  '"+region+"'";
         StringBuffer outputXML = new StringBuffer();
-        //outputXML.append("<?xml version='1.0' encoding='UTF-8'?>");
-		// outputXML.append("<customerID>" +cid +"</customerID>");
-        // outputXML.append("<phoneNumber>" +pn +"</phoneNumber>");
-        // outputXML.append("<email>" +email +"</email>");
-        
+
         try{
-            // Connection to database "international_pets_database" with authentication details in "userName"
-            // and "password"
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             dbConn = DriverManager.getConnection(dbURL, userName, password);
             
             Statement statement = dbConn.createStatement();
             if(statement.execute(sql1)){
                 rs = statement.getResultSet();
-                System.out.println("1st:"+sql1);
             }
             
             while (rs.next()){
@@ -266,13 +276,12 @@ public class restaurantManagementSystem implements ExceptionListener {
             
             for(String rName: nameList){
                 String sql2 = "select * from package where restaurantName = '"+rName +"'";
-                System.out.println("2nd:"+sql2);
                 //sql2 += rName;
                 outputXML.append("<restaurant>");
+                System.out.println(rName);
                 outputXML.append("<name>" + rName + "</name>");
                 if(statement.execute(sql2)){
                     rs = statement.getResultSet();
-                    System.out.println("Here!");
                 }
                 while(rs.next()){
                     outputXML.append("<packages>");
@@ -282,6 +291,7 @@ public class restaurantManagementSystem implements ExceptionListener {
                     outputXML.append("</packages>");
                 }
                 outputXML.append("</restaurant>");
+                System.out.println("---------------------------------------------");
             }
 
             
@@ -300,6 +310,8 @@ public class restaurantManagementSystem implements ExceptionListener {
 
         return (outputXML.toString());  
     }
+    
+    
     
     
     
