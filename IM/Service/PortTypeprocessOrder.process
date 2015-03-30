@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://xmlns.example.com/1427538568925" xmlns:ns5="http://xmlns.tibco.com/body" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/order.xsd" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:ns4="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:ns3="http://www.tibco.com/namespaces/tnt/plugins/mail" xmlns:pfx5="http://ws.apache.org/axis2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx4="http://xmlns.example.com/1427540200367" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx3="http://www.tibco.com/ns/no_namespace_schema_location/googleapi.xsd" xmlns:pfx2="http://www.tibco.com/ns/no_namespace_schema_location/sendOrder.xsd">
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://xmlns.example.com/1427538568925" xmlns:ns5="http://xmlns.tibco.com/body" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/order.xsd" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:ns4="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:ns3="http://www.tibco.com/namespaces/tnt/plugins/mail" xmlns:pfx5="http://ws.apache.org/axis2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx4="http://xmlns.example.com/1427540200367" xmlns:pfx3="http://www.tibco.com/ns/no_namespace_schema_location/googleapi.xsd" xmlns:pfx2="http://www.tibco.com/ns/no_namespace_schema_location/sendOrder.xsd">
     <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/order.xsd" schemaLocation="/order.xsd"/>
     <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/sendOrder.xsd" schemaLocation="/sendOrder.xsd"/>
     <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/googleapi.xsd" schemaLocation="/googleapi.xsd"/>
@@ -38,16 +38,16 @@
         <pd:inputBindings/>
     </pd:starter>
     <pd:endName>End</pd:endName>
-    <pd:endX>806</pd:endX>
-    <pd:endY>252</pd:endY>
+    <pd:endX>991</pd:endX>
+    <pd:endY>229</pd:endY>
     <pd:errorSchemas/>
     <pd:processVariables/>
     <pd:targetNamespace>http://xmlns.example.com/1427540200587</pd:targetNamespace>
-    <pd:activity name="Parse XML">
+    <pd:activity name="Parse XML from COS">
         <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
         <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
-        <pd:x>171</pd:x>
-        <pd:y>97</pd:y>
+        <pd:x>200</pd:x>
+        <pd:y>98</pd:y>
         <config>
             <inputStyle>text</inputStyle>
             <xsdVersion>default</xsdVersion>
@@ -60,11 +60,11 @@
             </xmlString>
         </pd:inputBindings>
     </pd:activity>
-    <pd:activity name="JMS Queue Sender">
+    <pd:activity name="Update CRM record">
         <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
         <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
-        <pd:x>171</pd:x>
-        <pd:y>227</pd:y>
+        <pd:x>203</pd:x>
+        <pd:y>226</pd:y>
         <config>
             <PermittedMessageType>Text</PermittedMessageType>
             <SessionAttributes>
@@ -86,16 +86,16 @@
                     <xsl:value-of select="&quot;q.sendtocrm&quot;"/>
                 </destinationQueue>
                 <Body>
-                    <xsl:value-of select="concat($Parse-XML/Order/customerId,&quot;,&quot;,$Parse-XML/Order/restaurant/restaurantName)"/>
+                    <xsl:value-of select="concat($Parse-XML-from-COS/Order/customerId,&quot;,&quot;,$Parse-XML-from-COS/Order/restaurant/restaurantName)"/>
                 </Body>
             </ns:ActivityInput>
         </pd:inputBindings>
     </pd:activity>
-    <pd:activity name="Send Mail">
+    <pd:activity name="Send Invoice by Mail">
         <pd:type>com.tibco.plugin.mail.MailPubActivity</pd:type>
         <pd:resourceType>ae.activities.MailActivityResource</pd:resourceType>
-        <pd:x>667</pd:x>
-        <pd:y>101</pd:y>
+        <pd:x>806</pd:x>
+        <pd:y>95</pd:y>
         <config>
             <newMimeSupport>true</newMimeSupport>
             <inputOutputVersion>5.2.0</inputOutputVersion>
@@ -124,7 +124,7 @@
                     <xsl:value-of select="&quot;oyoyo19930814@gmail.com&quot;"/>
                 </from>
                 <to>
-                    <xsl:value-of select="$Parse-XML/Order/email"/>
+                    <xsl:value-of select="$Parse-XML-from-COS/Order/email"/>
                 </to>
                 <replyTo>
                     <xsl:value-of select="&quot;oyoyo19930814@gmail.com&quot;"/>
@@ -134,17 +134,17 @@
                 </subject>
                 <ns5:bodyElement>
                     <bodyText>
-                        <xsl:value-of select="concat(&quot;Dear customer, &#xA;&#xA;You have ordered &quot;,tib:concat-sequence-format($Parse-XML/Order/restaurant/packages/package_name,&quot;, &quot;),&quot; from &quot;,$Parse-XML/Order/restaurant/restaurantName,&quot;. &#xA;&#xA;Your total payment is &quot;,$Parse-XML/Order/totalPrice,&quot; dollars.&#xA;&#xA;Thank you so much for choosing Food Bear!! Feel free to call our hotline at 85225105 if you have any concern.&#xA;&#xA;Best regards,&#xA;Food Bear&quot;,concat(&quot;Dear customer,&#xA;&#xA;Thanks for ordering from Food Bear. =)&#xA;&#xA;Your order will be ready in &quot;,concat($fingers-WS/outputMessage/pfx5:generateResponse/pfx5:return, $KFC-WS/outputMessage/pfx5:generateResponse/pfx5:return,$Otherwise-WS/outputMessage/pfx5:generateResponse/pfx5:return),&quot; minutes.&#xA;Deliver time: &quot;,$Parse-XML-1/DirectionsResponse/route/leg/duration))"/>
+                        <xsl:value-of select="concat(&quot;Dear customer, &#xA;&#xA;You have ordered &quot;,tib:concat-sequence-format($Parse-XML-from-COS/Order/restaurant/packages/package_name,&quot;, &quot;),&quot; from &quot;,$Parse-XML-from-COS/Order/restaurant/restaurantName,&quot;. &#xA;&#xA;Your total payment is &quot;,$Parse-XML-from-COS/Order/totalPrice,&quot; dollars.&#xA;&#xA;Thank you so much for choosing Food Bear!! Feel free to call our hotline at 85225105 if you have any concern.&#xA;&#xA;Best regards,&#xA;Food Bear&quot;,concat(&quot;Dear customer,&#xA;&#xA;Thanks for ordering from Food Bear. =)&#xA;&#xA;Your order will be ready in &quot;,concat($fingers-WS/outputMessage/pfx5:generateResponse/pfx5:return, $KFC-WS/outputMessage/pfx5:generateResponse/pfx5:return,$Otherwise-WS/outputMessage/pfx5:generateResponse/pfx5:return),&quot; minutes.&#xA;Deliver time: &quot;,$Parse-XML-from-GoogleMaps/DirectionsResponse/route/leg/duration/text))"/>
                     </bodyText>
                 </ns5:bodyElement>
             </ns3:mailActivityInput>
         </pd:inputBindings>
     </pd:activity>
-    <pd:activity name="Parse-XML-1">
+    <pd:activity name="Parse XML from GoogleMaps">
         <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
         <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
-        <pd:x>565</pd:x>
-        <pd:y>100</pd:y>
+        <pd:x>624</pd:x>
+        <pd:y>96</pd:y>
         <config>
             <inputStyle>text</inputStyle>
             <xsdVersion>default</xsdVersion>
@@ -153,15 +153,15 @@
         </config>
         <pd:inputBindings>
             <xmlString>
-                <xsl:value-of select="$Invoke-REST-API/ns2:RESTOutput/msg"/>
+                <xsl:value-of select="$Check-Deliver-Time-from-GoogleMapAPI/ns2:RESTOutput/msg"/>
             </xmlString>
         </pd:inputBindings>
     </pd:activity>
     <pd:activity name="Java Code">
         <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
         <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
-        <pd:x>285</pd:x>
-        <pd:y>227</pd:y>
+        <pd:x>312</pd:x>
+        <pd:y>226</pd:y>
         <config>
             <fileName>PortTypeprocessOrderJavaCode</fileName>
             <packageName>Service.PortTypeprocessOrder</packageName>
@@ -274,19 +274,19 @@ countryPostCode="Singapore%20"+postCode;}
         <pd:inputBindings>
             <javaCodeActivityInput>
                 <restaurant>
-                    <xsl:value-of select="$Parse-XML/Order/restaurant/restaurantName"/>
+                    <xsl:value-of select="$Parse-XML-from-COS/Order/restaurant/restaurantName"/>
                 </restaurant>
                 <postCode>
-                    <xsl:value-of select="$Parse-XML/Order/postcode"/>
+                    <xsl:value-of select="$Parse-XML-from-COS/Order/postcode"/>
                 </postCode>
             </javaCodeActivityInput>
         </pd:inputBindings>
     </pd:activity>
-    <pd:activity name="Invoke REST API">
+    <pd:activity name="Check Deliver Time from GoogleMapAPI">
         <pd:type>com.tibco.plugin.json.activities.RestActivity</pd:type>
         <pd:resourceType>ae.activities.RestActivity</pd:resourceType>
-        <pd:x>564</pd:x>
-        <pd:y>226</pd:y>
+        <pd:x>624</pd:x>
+        <pd:y>281</pd:y>
         <config>
             <restMethodUI>GET</restMethodUI>
             <restResponseType>XML</restResponseType>
@@ -402,11 +402,11 @@ countryPostCode="Singapore%20"+postCode;}
             </ns2:ActivityInput>
         </pd:inputBindings>
     </pd:activity>
-    <pd:activity name="Send SMS">
+    <pd:activity name="Send Deliver Time by SMS">
         <pd:type>com.tibco.plugin.json.activities.RestActivity</pd:type>
         <pd:resourceType>ae.activities.RestActivity</pd:resourceType>
-        <pd:x>669</pd:x>
-        <pd:y>250</pd:y>
+        <pd:x>809</pd:x>
+        <pd:y>237</pd:y>
         <config>
             <restMethodUI>GET</restMethodUI>
             <restResponseType>Default</restResponseType>
@@ -512,7 +512,7 @@ countryPostCode="Singapore%20"+postCode;}
                 <ns2:Parameters>
                     <Query>
                         <message>
-                            <xsl:value-of select="concat(&quot;Dear customer,&#xA;&#xA;Thanks for ordering from Food Bear. =)&#xA;&#xA;Your order will be ready in &quot;,concat($fingers-WS/outputMessage/pfx5:generateResponse/pfx5:return, $KFC-WS/outputMessage/pfx5:generateResponse/pfx5:return,$Otherwise-WS/outputMessage/pfx5:generateResponse/pfx5:return),&quot; minutes.&#xA;Deliver time: &quot;,$Parse-XML-1/DirectionsResponse/route/leg/duration)"/>
+                            <xsl:value-of select="concat(&quot;Dear customer,&#xA;&#xA;Thanks for ordering from Food Bear. =)&#xA;&#xA;Your order will be ready in &quot;,concat($fingers-WS/outputMessage/pfx5:generateResponse/pfx5:return, $KFC-WS/outputMessage/pfx5:generateResponse/pfx5:return,$Otherwise-WS/outputMessage/pfx5:generateResponse/pfx5:return),&quot; minutes.&#xA;Deliver time: &quot;,$Parse-XML-from-GoogleMaps/DirectionsResponse/route/leg/duration/text)"/>
                         </message>
                         <languagetype>
                             <xsl:value-of select="1"/>
@@ -521,7 +521,7 @@ countryPostCode="Singapore%20"+postCode;}
                             <xsl:value-of select="&quot;TEST&quot;"/>
                         </senderid>
                         <mobileno>
-                            <xsl:value-of select="concat(&quot;65&quot;,$Parse-XML/Order/phoneNumber)"/>
+                            <xsl:value-of select="concat(&quot;65&quot;,$Parse-XML-from-COS/Order/phoneNumber)"/>
                         </mobileno>
                         <apipassword>
                             <xsl:value-of select="&quot;APIL4CSQY22VVL4CSQ&quot;"/>
@@ -537,8 +537,8 @@ countryPostCode="Singapore%20"+postCode;}
     <pd:activity name="4 fingers WS">
         <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
         <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
-        <pd:x>410</pd:x>
-        <pd:y>122</pd:y>
+        <pd:x>458</pd:x>
+        <pd:y>141</pd:y>
         <config>
             <timeout>10</timeout>
             <soapAttachmentStyle>SwA</soapAttachmentStyle>
@@ -557,7 +557,7 @@ countryPostCode="Singapore%20"+postCode;}
                         <xsl:value-of select="$Java-Code/javaCodeActivityOutput/restaurantAddress"/>
                     </pfx5:args0>
                     <pfx5:args1>
-                        <xsl:value-of select="concat(tib:concat-sequence($Parse-XML/Order/restaurant/packages/package_name),tib:concat-sequence( $Parse-XML/Order/restaurant/packages/package_detail))"/>
+                        <xsl:value-of select="concat(tib:concat-sequence($Parse-XML-from-COS/Order/restaurant/packages/package_name),tib:concat-sequence( $Parse-XML-from-COS/Order/restaurant/packages/package_detail))"/>
                     </pfx5:args1>
                 </pfx5:generate>
             </inputMessage>
@@ -566,8 +566,8 @@ countryPostCode="Singapore%20"+postCode;}
     <pd:activity name="KFC WS">
         <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
         <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
-        <pd:x>417</pd:x>
-        <pd:y>227</pd:y>
+        <pd:x>476</pd:x>
+        <pd:y>228</pd:y>
         <config>
             <timeout>10</timeout>
             <soapAttachmentStyle>SwA</soapAttachmentStyle>
@@ -586,7 +586,7 @@ countryPostCode="Singapore%20"+postCode;}
                         <xsl:value-of select="$Java-Code/javaCodeActivityOutput/restaurantAddress"/>
                     </pfx5:args0>
                     <pfx5:args1>
-                        <xsl:value-of select="concat(tib:concat-sequence($Parse-XML/Order/restaurant/packages/package_name),tib:concat-sequence( $Parse-XML/Order/restaurant/packages/package_detail))"/>
+                        <xsl:value-of select="concat(tib:concat-sequence($Parse-XML-from-COS/Order/restaurant/packages/package_name),tib:concat-sequence( $Parse-XML-from-COS/Order/restaurant/packages/package_detail))"/>
                     </pfx5:args1>
                 </pfx5:generate>
             </inputMessage>
@@ -595,8 +595,8 @@ countryPostCode="Singapore%20"+postCode;}
     <pd:activity name="Otherwise WS">
         <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
         <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
-        <pd:x>413</pd:x>
-        <pd:y>323</pd:y>
+        <pd:x>461</pd:x>
+        <pd:y>310</pd:y>
         <config>
             <timeout>10</timeout>
             <soapAttachmentStyle>SwA</soapAttachmentStyle>
@@ -615,7 +615,7 @@ countryPostCode="Singapore%20"+postCode;}
                         <xsl:value-of select="$Java-Code/javaCodeActivityOutput/restaurantAddress"/>
                     </pfx5:args0>
                     <pfx5:args1>
-                        <xsl:value-of select="concat(tib:concat-sequence($Parse-XML/Order/restaurant/packages/package_name),tib:concat-sequence( $Parse-XML/Order/restaurant/packages/package_detail))"/>
+                        <xsl:value-of select="concat(tib:concat-sequence($Parse-XML-from-COS/Order/restaurant/packages/package_name),tib:concat-sequence( $Parse-XML-from-COS/Order/restaurant/packages/package_detail))"/>
                     </pfx5:args1>
                 </pfx5:generate>
             </inputMessage>
@@ -623,41 +623,41 @@ countryPostCode="Singapore%20"+postCode;}
     </pd:activity>
     <pd:transition>
         <pd:from>Recieve orderInfo from COS</pd:from>
-        <pd:to>Parse XML</pd:to>
+        <pd:to>Parse XML from COS</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
     </pd:transition>
     <pd:transition>
-        <pd:from>Parse XML</pd:from>
-        <pd:to>JMS Queue Sender</pd:to>
+        <pd:from>Parse XML from COS</pd:from>
+        <pd:to>Update CRM record</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
     </pd:transition>
     <pd:transition>
-        <pd:from>Invoke REST API</pd:from>
-        <pd:to>Parse-XML-1</pd:to>
+        <pd:from>Check Deliver Time from GoogleMapAPI</pd:from>
+        <pd:to>Parse XML from GoogleMaps</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
     </pd:transition>
     <pd:transition>
-        <pd:from>Parse-XML-1</pd:from>
-        <pd:to>Send Mail</pd:to>
+        <pd:from>Parse XML from GoogleMaps</pd:from>
+        <pd:to>Send Invoice by Mail</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
     </pd:transition>
     <pd:transition>
-        <pd:from>Send SMS</pd:from>
+        <pd:from>Send Deliver Time by SMS</pd:from>
         <pd:to>End</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
     </pd:transition>
     <pd:transition>
-        <pd:from>JMS Queue Sender</pd:from>
+        <pd:from>Update CRM record</pd:from>
         <pd:to>Java Code</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
@@ -681,14 +681,14 @@ countryPostCode="Singapore%20"+postCode;}
     </pd:transition>
     <pd:transition>
         <pd:from>4 fingers WS</pd:from>
-        <pd:to>Invoke REST API</pd:to>
+        <pd:to>Check Deliver Time from GoogleMapAPI</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
     </pd:transition>
     <pd:transition>
         <pd:from>KFC WS</pd:from>
-        <pd:to>Invoke REST API</pd:to>
+        <pd:to>Check Deliver Time from GoogleMapAPI</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
@@ -702,14 +702,14 @@ countryPostCode="Singapore%20"+postCode;}
     </pd:transition>
     <pd:transition>
         <pd:from>Otherwise WS</pd:from>
-        <pd:to>Invoke REST API</pd:to>
+        <pd:to>Check Deliver Time from GoogleMapAPI</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
     </pd:transition>
     <pd:transition>
-        <pd:from>Send Mail</pd:from>
-        <pd:to>Send SMS</pd:to>
+        <pd:from>Send Invoice by Mail</pd:from>
+        <pd:to>Send Deliver Time by SMS</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
