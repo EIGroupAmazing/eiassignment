@@ -51,7 +51,8 @@ public class SendOrderController extends HttpServlet {
                 String xml = in.nextLine();
                 in.close();
                 System.out.println(xml);
-                EMSMessageSender emsSender = new EMSMessageSender("q.request.placeorder","192.168.137.254");
+                //EMSMessageSender emsSender = new EMSMessageSender("q.request.placeorder","192.168.137.254");
+                EMSMessageSender emsSender = new EMSMessageSender("q.request.placeorder");
                 emsSender.sendMessage(xml,false);
         }catch (IOException e) {
             e.printStackTrace();

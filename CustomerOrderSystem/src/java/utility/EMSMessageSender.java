@@ -1,7 +1,8 @@
-
 package utility;
 
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -13,8 +14,8 @@ import javax.jms.TextMessage;
 public class EMSMessageSender {
 
 
-    String serverUrl = "196.108.137.109";
-    //String serverUrl = "192.168.137.254";
+    //String serverUrl = "196.108.137.109";
+    String serverUrl = "192.168.137.254";
     //String serverUrl = "localhost";
     String userName = null;
     String password = null;
@@ -25,6 +26,7 @@ public class EMSMessageSender {
     Session session = null;
     MessageConsumer msgConsumer = null;
     Destination destination = null;
+    MessageConsumer rplConsumer = null;
     public EMSMessageSender(String queueName){
         this.queueName = queueName;
     }
@@ -49,13 +51,13 @@ public class EMSMessageSender {
             MessageProducer producer = session.createProducer(destination);
             
             //Destination rplDestination = session.createTemporaryQueue();
-            Destination rplDestination = session.createQueue("q.reply");
-            MessageConsumer rplConsumer = session.createConsumer(rplDestination);
-
+            
             TextMessage message = session.createTextMessage();
             message.setText(xmlInput);
             if(reply){
-                message.setJMSReplyTo(session.createTemporaryQueue());
+                //message.setJMSReplyTo(session.createTemporaryQueue());
+                Destination rplDestination = session.createQueue("q.receiveorder");
+                rplConsumer = session.createConsumer(rplDestination);
             }
             producer.send(message);
             System.out.println(message.toString());
@@ -64,15 +66,20 @@ public class EMSMessageSender {
             if (reply){
                 System.out.println("Waiting for reply message");
                 TextMessage replyMsg = (TextMessage)rplConsumer.receive(20000);
+                if (replyMsg==null){
+                    throw new Exception("no return");
+                }
                 System.out.println(replyMsg.toString());
                 msgText = replyMsg.getText();
-                System.out.println("*********"+msgText);
+                //System.out.println("*********"+msgText);
             }
             
             session.close();
             connection.close();
         }catch(JMSException exc){
             exc.printStackTrace();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
         return msgText;
     }

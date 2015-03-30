@@ -50,24 +50,25 @@ public class RestaurantRetrievalController extends HttpServlet {
                     +"</customer_id><postal_code>"+postalCode+"</postal_code></search_creteria>";
             System.out.println(xml);
             //Throw XML to EMS sender
-            EMSMessageSender msgSender = new EMSMessageSender("q.request.search","192.168.137.109");
+            //EMSMessageSender msgSender = new EMSMessageSender("q.request.search","192.168.137.109");
+            EMSMessageSender msgSender = new EMSMessageSender("q.request.search");
             String jmsOutput = msgSender.sendMessage(xml,true);
             /*String jmsOutput = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-"<ns:result xmlns:ns=\"http://xmlns.example.com/unique/default/namespace/1134438639123\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://xmlns.example.com/unique/default/namespace/1134438639123 file:///C:/Users/Alex/Downloads/Telegram%20Desktop/restaurant_list.xsd\">\n" +
-"    <ns:customer>\n" +
-"        <ns:id>112</ns:id>\n" +
-"        <ns:email>yx.yuan.2013@sis.smu.edu.sg</ns:email>\n" +
-"        <ns:phone>85225105</ns:phone>\n" +
-"    </ns:customer>\n" +
-"    <ns:restaurant>\n" +
-"        <ns:packages>\n" +
-"            <ns:package_name>pck1</ns:package_name>\n" +
-"            <ns:package_detail>pck1 is good</ns:package_detail>\n" +
-"            <ns:package_price>5094</ns:package_price>\n" +
-"        </ns:packages>\n" +
-"        <ns:name>singapore management university</ns:name>\n" +
-"    </ns:restaurant>\n" +
-"</ns:result>";
+"<result>\n" +
+"    <customer>\n" +
+"        <id>112</id>\n" +
+"        <email>yx.yuan.2013@sis.smu.edu.sg</email>\n" +
+"        <phone>85225105</phone>\n" +
+"    </customer>\n" +
+"    <restaurant>\n" +
+"        <packages>\n" +
+"            <package_name>pck1</package_name>\n" +
+"            <package_detail>pck1 is good</package_detail>\n" +
+"            <package_price>5.0</package_price>\n" +
+"        </packages>\n" +
+"        <name>KFC@Singapore Management University</name>\n" +
+"    </restaurant>\n" +
+"</result>";
            */
             //System.out.println(jmsOutput);
             //TODO: parse returned XMl to object list

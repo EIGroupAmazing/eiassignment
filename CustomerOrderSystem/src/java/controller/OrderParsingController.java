@@ -46,7 +46,7 @@ public class OrderParsingController extends HttpServlet {
             String phone = (String)session.getAttribute("phone");
             String postcode = (String)session.getAttribute("postcode");
             ArrayList<Restaurant> restList = (ArrayList<Restaurant>) session.getAttribute("restList");
-            System.out.println(customerId+email+phone);
+            System.out.println("SESSION VALUE"+customerId+email+phone);
             ArrayList<Pkg> selected = new ArrayList<Pkg>();
             double totalPrice = 0;
             String chosenRestName = null;
@@ -62,6 +62,7 @@ public class OrderParsingController extends HttpServlet {
                     validInput = false;
                     break;
                 }
+                
                 for(Restaurant r: restList){
                     ArrayList<Pkg> pkgInRest = r.getPkgList();
                     String restName = r.getName();
@@ -75,10 +76,12 @@ public class OrderParsingController extends HttpServlet {
                         break;
                     }
                 }
+                
             }
             if(chosenRestName==null){
                 validInput=false;
             }
+            
             if (!validInput){
                 System.out.println("redirecting to listPackages.jsp");
                 request.setAttribute("error","Please select pakages from one and only one restaurant!" );

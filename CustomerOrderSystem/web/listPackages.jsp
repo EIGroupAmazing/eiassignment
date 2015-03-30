@@ -35,7 +35,7 @@
                 <%for(int j=0;j<pkgList.size();j++){
                     Pkg currentPkg = pkgList.get(j);
                     String pkgName = currentPkg.getName();
-                    String pkgDetail = currentPkg.getDetail();
+                    String pkgDetail = currentPkg.getDetail().replaceAll("\n", "<br>");
                     String pkgPrice = currentPkg.getPrice();
                 %>
                     <input type="checkbox" name="package" value="<%=restName+"\t"%><%=pkgName%>"><%=pkgName%><br>
