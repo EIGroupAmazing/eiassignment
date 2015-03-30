@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 30, 2015 at 11:32 AM
+-- Generation Time: Mar 30, 2015 at 11:43 AM
 -- Server version: 5.6.12-log
 -- PHP Version: 5.4.12
 
@@ -135,6 +135,22 @@ INSERT INTO `restaurant` (`RestaurantName`, `OpenTime`, `CloseTime`, `Type`) VAL
 ('Sakae Sushi (Harbourfront Centre)', '11:30:00', '22:00:00', 'Janpanese'),
 ('Subway@Suntec City', '00:00:00', '23:59:59', 'fast food'),
 ('Wendy''s@Raffles Quay', '08:00:00', '23:59:59', 'fast food');
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `deliveryscope`
+--
+ALTER TABLE `deliveryscope`
+  ADD CONSTRAINT `deliveryscope_ibfk_1` FOREIGN KEY (`restaurantName`) REFERENCES `restaurant` (`RestaurantName`);
+
+--
+-- Constraints for table `package`
+--
+ALTER TABLE `package`
+  ADD CONSTRAINT `package_ibfk_1` FOREIGN KEY (`RestaurantName`) REFERENCES `restaurant` (`RestaurantName`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
