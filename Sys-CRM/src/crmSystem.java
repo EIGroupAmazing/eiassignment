@@ -177,7 +177,7 @@ public class crmSystem implements ExceptionListener {
     // Handle the message when received.
     public void onMessage(Message message) {
         try {
-            if ((message instanceof TextMessage) && (message.getJMSReplyTo() != null)) {
+            if ((message instanceof TextMessage) ) {
                 TextMessage requestMessage = (TextMessage) message;
 
                 
