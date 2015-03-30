@@ -48,7 +48,8 @@ public class EMSMessageSender {
             destination = session.createQueue(queueName);
             MessageProducer producer = session.createProducer(destination);
             
-            Destination rplDestination = session.createTemporaryQueue();
+            //Destination rplDestination = session.createTemporaryQueue();
+            Destination rplDestination = session.createQueue("q.reply");
             MessageConsumer rplConsumer = session.createConsumer(rplDestination);
 
             TextMessage message = session.createTextMessage();
@@ -65,6 +66,7 @@ public class EMSMessageSender {
                 TextMessage replyMsg = (TextMessage)rplConsumer.receive(20000);
                 System.out.println(replyMsg.toString());
                 msgText = replyMsg.getText();
+                System.out.println("*********"+msgText);
             }
             
             session.close();

@@ -17,7 +17,8 @@ import org.xml.sax.helpers.DefaultHandler;
 public class XMLParser extends DefaultHandler {
     String tmpValue;
     String xmlStr;
-    String ns = "ns:";
+    //String ns = "ns:";
+    String ns = "";
     Customer cust;
     Restaurant rest;
     Pkg pkg;

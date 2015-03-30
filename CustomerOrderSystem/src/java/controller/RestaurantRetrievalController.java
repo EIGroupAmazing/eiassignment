@@ -42,7 +42,7 @@ public class RestaurantRetrievalController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            out.println("Seaching for ");
+            out.println("Seaching for available restaurant");
             String username = request.getParameter("username");
             String postalCodeStr = request.getParameter("postalCode");
             int postalCode = Integer.parseInt(postalCodeStr);
@@ -57,7 +57,7 @@ public class RestaurantRetrievalController extends HttpServlet {
 "    <ns:customer>\n" +
 "        <ns:id>112</ns:id>\n" +
 "        <ns:email>yx.yuan.2013@sis.smu.edu.sg</ns:email>\n" +
-"        <ns:phone>83572238</ns:phone>\n" +
+"        <ns:phone>85225105</ns:phone>\n" +
 "    </ns:customer>\n" +
 "    <ns:restaurant>\n" +
 "        <ns:packages>\n" +
@@ -75,7 +75,6 @@ public class RestaurantRetrievalController extends HttpServlet {
             Object[] objectOutput = xp.getParsingResult();
             Customer cust = (Customer)objectOutput[0];
             ArrayList<Restaurant> restList = (ArrayList<Restaurant>)objectOutput[1];
-            
             HttpSession session = request.getSession();
             session.setAttribute("customerid", cust.getId());
             session.setAttribute("email", cust.getEmail());
