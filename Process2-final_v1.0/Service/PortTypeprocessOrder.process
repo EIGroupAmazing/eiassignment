@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://xmlns.example.com/1427538568925" xmlns:ns5="http://xmlns.tibco.com/body" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/order.xsd" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:ns4="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:ns3="http://www.tibco.com/namespaces/tnt/plugins/mail" xmlns:pfx5="http://ws.apache.org/axis2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx4="http://xmlns.example.com/1427540200367" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx3="http://www.tibco.com/ns/no_namespace_schema_location/googleapi.xsd" xmlns:pfx2="http://www.tibco.com/ns/no_namespace_schema_location/sendOrder.xsd">
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://xmlns.example.com/1427538568925" xmlns:ns5="http://xmlns.tibco.com/body" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/order.xsd" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:ns4="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:ns3="http://www.tibco.com/namespaces/tnt/plugins/mail" xmlns:pfx5="http://ws.apache.org/axis2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx4="http://xmlns.example.com/1427540200367" xmlns:pfx3="http://www.tibco.com/ns/no_namespace_schema_location/googleapi.xsd" xmlns:pfx2="http://www.tibco.com/ns/no_namespace_schema_location/sendOrder.xsd">
     <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/order.xsd" schemaLocation="/order.xsd"/>
     <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/sendOrder.xsd" schemaLocation="/sendOrder.xsd"/>
     <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/googleapi.xsd" schemaLocation="/googleapi.xsd"/>
@@ -71,7 +71,7 @@
                 <transacted>false</transacted>
                 <acknowledgeMode>1</acknowledgeMode>
                 <maxSessions>1</maxSessions>
-                <destination>q,sendtocrm</destination>
+                <destination>q.sendtocrm</destination>
             </SessionAttributes>
             <ConfigurableHeaders>
                 <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
@@ -82,6 +82,9 @@
         </config>
         <pd:inputBindings>
             <ns:ActivityInput>
+                <destinationQueue>
+                    <xsl:value-of select="&quot;q.sendtocrm&quot;"/>
+                </destinationQueue>
                 <Body>
                     <xsl:value-of select="concat($Parse-XML/Order/customerId,&quot;,&quot;,$Parse-XML/Order/restaurant/restaurantName)"/>
                 </Body>
@@ -131,7 +134,7 @@
                 </subject>
                 <ns5:bodyElement>
                     <bodyText>
-                        <xsl:value-of select="concat(&quot;Dear customer, &#xA;&#xA;You have ordered &quot;,tib:concat-sequence-format($Parse-XML/Order/restaurant/packages/package_name,&quot;, &quot;),&quot; from &quot;,$Parse-XML/Order/restaurant/restaurantName,&quot;. &#xA;&#xA;Your total payment is &quot;,$Parse-XML/Order/totalPrice,&quot; dollars.&#xA;&#xA;Thank you so much for choosing Food Bear!! Feel free to call our hotline at 85225105 if you have any concern.&#xA;&#xA;Best regards,&#xA;Food Bear&quot;)"/>
+                        <xsl:value-of select="concat(&quot;Dear customer, &#xA;&#xA;You have ordered &quot;,tib:concat-sequence-format($Parse-XML/Order/restaurant/packages/package_name,&quot;, &quot;),&quot; from &quot;,$Parse-XML/Order/restaurant/restaurantName,&quot;. &#xA;&#xA;Your total payment is &quot;,$Parse-XML/Order/totalPrice,&quot; dollars.&#xA;&#xA;Thank you so much for choosing Food Bear!! Feel free to call our hotline at 85225105 if you have any concern.&#xA;&#xA;Best regards,&#xA;Food Bear&quot;,concat(&quot;Dear customer,&#xA;&#xA;Thanks for ordering from Food Bear. =)&#xA;&#xA;Your order will be ready in &quot;,concat($fingers-WS/outputMessage/pfx5:generateResponse/pfx5:return, $KFC-WS/outputMessage/pfx5:generateResponse/pfx5:return,$Otherwise-WS/outputMessage/pfx5:generateResponse/pfx5:return),&quot; minutes.&#xA;Deliver time: &quot;,$Parse-XML-1/DirectionsResponse/route/leg/duration))"/>
                     </bodyText>
                 </ns5:bodyElement>
             </ns3:mailActivityInput>
