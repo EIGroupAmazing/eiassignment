@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Repository:repository xmlns:Repository="http://www.tibco.com/xmlns/repo/types/2002">
-    <folder resourceType="ae.rootfolder" name="project2" propLocks="" allowUserToChangeIcon="false" sortContents="false" acceptsResources="true" allowDuplicates="false">
+    <folder resourceType="ae.rootfolder" name="Process2-final_v1.0" propLocks="" allowUserToChangeIcon="false" sortContents="false" acceptsResources="true" allowDuplicates="false">
         <fixedChildren>AESchemas</fixedChildren>
         <projectProperties>
             <property key="ae.pallette.tcp.pallette.version" value="5.11.0"/>
             <property key="palette.generalpalette.version" value="5.3.0"/>
             <property key="aa.adapteradministrator.palette.version" value="5.3.0"/>
             <property key="ae.palette.SOAPpalette.version" value="5.11.0"/>
-            <property key="projectName" value="project2"/>
+            <property key="projectName" value="Process2-final_v1.0"/>
             <property key="ae.palette.Mail.palette.version" value="5.11.0"/>
             <property key="ae.palette.rvpalette.version" value="5.11.0"/>
             <property key="ae.palette.JMS.palette.version" value="5.11.0"/>
