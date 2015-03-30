@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://xmlns.example.com/unique/default/namespace/1134438639124" xmlns:ns3="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://xmlns.example.com/1427451287496" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx3="http://xmlns.example.com/unique/default/namespace/1134438639123" xmlns:pfx2="http://ws.apache.org/axis2" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRegion.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://xmlns.example.com/unique/default/namespace/1134438639124" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://xmlns.example.com/1427451287496" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRegion.xsd" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:ns4="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:ns3="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx4="http://www.tibco.com/ns/no_namespace_schema_location/search_criteria.xsd" xmlns:pfx3="http://xmlns.example.com/unique/default/namespace/1134438639123" xmlns:pfx2="http://ws.apache.org/axis2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRegion.xsd" schemaLocation="/retrieveRegion.xsd"/>
     <xsd:import namespace="http://xmlns.example.com/unique/default/namespace/1134438639123" schemaLocation="/restaurant_list.xsd"/>
     <xsd:import namespace="http://xmlns.example.com/unique/default/namespace/1134438639124" schemaLocation="/search_creteria.xsd"/>
+    <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/search_criteria.xsd" schemaLocation="/search_criteria.xsd"/>
     <wsdl:import namespace="http://xmlns.example.com/1427451287496" location="/Service/MapPostal.wsdl"/>
     <wsdl:import namespace="http://ws.apache.org/axis2" location="/Service/retrieveRestaurantList.wsdl"/>
     <pd:name>Service/PortTypesendRestaurantList.process</pd:name>
@@ -42,8 +43,8 @@
     <pd:activity name="Parse XML">
         <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
         <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
-        <pd:x>515</pd:x>
-        <pd:y>71</pd:y>
+        <pd:x>516</pd:x>
+        <pd:y>84</pd:y>
         <config>
             <inputStyle>text</inputStyle>
             <xsdVersion>default</xsdVersion>
@@ -59,8 +60,8 @@
     <pd:activity name="Send Region to RMS">
         <pd:type>com.tibco.plugin.jms.JMSQueueRequestReplyActivity</pd:type>
         <pd:resourceType>ae.activities.JMSQueueRequestReplyActivity</pd:resourceType>
-        <pd:x>667</pd:x>
-        <pd:y>74</pd:y>
+        <pd:x>674</pd:x>
+        <pd:y>104</pd:y>
         <config>
             <PermittedMessageType>Text</PermittedMessageType>
             <SessionAttributes>
@@ -84,17 +85,14 @@
                 <Body>
                     <xsl:value-of select="$Parse-XML/GeocodeResponse/result/address_component[2]/long_name"/>
                 </Body>
-                <DynamicProperties>
-                    <property/>
-                </DynamicProperties>
             </ns3:ActivityInput>
         </pd:inputBindings>
     </pd:activity>
     <pd:activity name="Send unsortedlist to CRM">
         <pd:type>com.tibco.plugin.jms.JMSQueueRequestReplyActivity</pd:type>
         <pd:resourceType>ae.activities.JMSQueueRequestReplyActivity</pd:resourceType>
-        <pd:x>829</pd:x>
-        <pd:y>84</pd:y>
+        <pd:x>816</pd:x>
+        <pd:y>91</pd:y>
         <config>
             <PermittedMessageType>Text</PermittedMessageType>
             <SessionAttributes>
@@ -116,26 +114,23 @@
                     <xsl:value-of select="&quot;q.reply.sortedlist&quot;"/>
                 </replyToQueue>
                 <Body>
-                    <xsl:value-of select="concat($Parse-XML-1/root/ns:customer_id, $Send-Region-to-RMS/ns3:ActivityOutput/Body)"/>
+                    <xsl:value-of select="concat($Parse-XML-1/search_creteria/customer_id,$Send-Region-to-RMS/ns3:ActivityOutput/Body)"/>
                 </Body>
-                <DynamicProperties>
-                    <property/>
-                </DynamicProperties>
             </ns3:ActivityInput>
         </pd:inputBindings>
     </pd:activity>
     <pd:activity name="JMS Queue Sender">
         <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
         <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
-        <pd:x>1014</pd:x>
-        <pd:y>82</pd:y>
+        <pd:x>1011</pd:x>
+        <pd:y>87</pd:y>
         <config>
             <PermittedMessageType>Text</PermittedMessageType>
             <SessionAttributes>
                 <transacted>false</transacted>
                 <acknowledgeMode>1</acknowledgeMode>
                 <maxSessions>1</maxSessions>
-                <destination>q.request.restaurantlist</destination>
+                <destination>q.reply</destination>
             </SessionAttributes>
             <ConfigurableHeaders>
                 <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
@@ -146,6 +141,9 @@
         </config>
         <pd:inputBindings>
             <ns3:ActivityInput>
+                <destinationQueue>
+                    <xsl:value-of select="&quot;q.reply&quot;"/>
+                </destinationQueue>
                 <Body>
                     <xsl:value-of select="$Send-unsortedlist-to-CRM/ns3:ActivityOutput/Body"/>
                 </Body>
@@ -155,22 +153,13 @@
     <pd:activity name="Parse-XML-1">
         <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
         <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
-        <pd:x>186</pd:x>
-        <pd:y>84</pd:y>
+        <pd:x>210</pd:x>
+        <pd:y>86</pd:y>
         <config>
             <inputStyle>text</inputStyle>
             <xsdVersion>default</xsdVersion>
             <validateOutput>true</validateOutput>
-            <term>
-                <xsd:element name="root">
-                    <xsd:complexType>
-                        <xsd:sequence>
-                            <xsd:element ref="ns:customer_id"/>
-                            <xsd:element ref="ns:postal_code"/>
-                        </xsd:sequence>
-                    </xsd:complexType>
-                </xsd:element>
-            </term>
+            <term ref="pfx4:search_creteria"/>
         </config>
         <pd:inputBindings>
             <xmlString>
@@ -181,8 +170,8 @@
     <pd:activity name="Invoke REST API">
         <pd:type>com.tibco.plugin.json.activities.RestActivity</pd:type>
         <pd:resourceType>ae.activities.RestActivity</pd:resourceType>
-        <pd:x>353</pd:x>
-        <pd:y>84</pd:y>
+        <pd:x>354</pd:x>
+        <pd:y>98</pd:y>
         <config>
             <restMethodUI>GET</restMethodUI>
             <restResponseType>XML</restResponseType>
@@ -195,7 +184,7 @@
                             <xsd:element name="Query" minOccurs="0">
                                 <xsd:complexType>
                                     <xsd:sequence>
-                                        <xsd:element name="param" type="xsd:string"/>
+                                        <xsd:element name="address" type="xsd:string"/>
                                     </xsd:sequence>
                                 </xsd:complexType>
                             </xsd:element>
@@ -282,9 +271,9 @@
             <ns2:ActivityInput>
                 <ns2:Parameters>
                     <Query>
-                        <param>
-                            <xsl:value-of select="concat(&quot;Singapore%20&quot;, $Parse-XML-1/root/ns:postal_code)"/>
-                        </param>
+                        <address>
+                            <xsl:value-of select="concat(&quot;Singapore%20&quot;,$Parse-XML-1/search_creteria/postal_code)"/>
+                        </address>
                     </Query>
                 </ns2:Parameters>
             </ns2:ActivityInput>

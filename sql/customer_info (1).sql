@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 27, 2015 at 07:52 AM
+-- Generation Time: Mar 30, 2015 at 11:32 AM
 -- Server version: 5.6.12-log
 -- PHP Version: 5.4.12
 
@@ -63,16 +63,19 @@ CREATE TABLE IF NOT EXISTS `order` (
 --
 
 INSERT INTO `order` (`Customer_id`, `Time_generated`, `restaurant_name`) VALUES
-('jj', '2015-03-27 07:50:06', 'McDonald''s Suntec City'),
-('luning', '2015-03-17 05:00:00', 'McDonald''s Suntec City'),
-('luning', '2015-03-18 08:00:00', 'McDonald''s Suntec City'),
-('luning', '2015-03-23 11:00:00', '4 fingers plaza singapura'),
-('luning', '2015-03-27 07:48:40', '4 fingers plaza singapura'),
-('luning', '2015-03-27 07:48:50', '4 fingers plaza singapura'),
-('luning', '2015-03-27 07:48:58', '4 fingers plaza singapura'),
+('jj', '2015-03-30 11:26:13', 'KFC@Dhoby Ghaut'),
 ('luning', '2015-03-27 07:50:55', 'Popeyes Louisiana Kitchen (The Cathay)'),
+('luning', '2015-03-30 11:23:11', 'Subway@Suntec City '),
+('luning', '2015-03-30 11:23:22', 'Subway@Suntec City '),
+('luning', '2015-03-30 11:23:29', 'Subway@Suntec City '),
+('luning', '2015-03-30 11:23:37', 'Subway@Suntec City '),
+('luning', '2015-03-30 11:23:45', 'Subway@Suntec City '),
+('luning', '2015-03-30 11:24:44', '4fingers@plaza singapura'),
+('luning', '2015-03-30 11:24:53', '4fingers@plaza singapura'),
+('luning', '2015-03-30 11:25:02', '4fingers@plaza singapura'),
+('luning', '2015-03-30 11:26:18', 'KFC@Dhoby Ghaut'),
 ('yuxuan', '2015-03-09 19:00:00', 'McDonald''s Suntec City'),
-('yuxuan', '2015-03-27 07:51:53', 'Subway Suntec City Mall');
+('yuxuan', '2015-03-30 11:23:53', 'Subway@Suntec City ');
 
 --
 -- Constraints for dumped tables

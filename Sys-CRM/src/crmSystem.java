@@ -190,6 +190,9 @@ public class crmSystem implements ExceptionListener {
                 String contentReceived  = requestMessage.getText();
                 String cid = contentReceived.substring(0, contentReceived.indexOf('<'));
                 String unsortedList = contentReceived.substring(contentReceived.indexOf('<'));
+                System.out.println("---------------------------");
+                System.out.println(cid);
+                System.out.println("---------------------------");
                 String sortedList = sortRestaurants(unsortedList,cid);
                 
                 
@@ -245,12 +248,15 @@ public class crmSystem implements ExceptionListener {
         LinkedHashMap<String, Integer> rankingReference = new LinkedHashMap<String, Integer>();
         
         
-        String sql1 = "SELECT restaurant_name, COUNT( restaurant_name ) FROM  order WHERE customer_id = '"+cid +"' GROUP BY restaurant_name ORDER BY COUNT( restaurant_name ) ASCD";
-        String sql2 = "SELECT * FROM customer where customer_id =' " + cid + "'";
+        String sql1 = "SELECT restaurant_name, COUNT( restaurant_name ) FROM `order`  WHERE customer_id = '"+cid +"' GROUP BY restaurant_name ORDER BY COUNT( restaurant_name )";
+        
+        String sql2 = "SELECT * FROM customer where customer_id ='" + cid + "'";
+        
         StringBuffer outputXML = new StringBuffer();
-        //outputXML.append("<?xml version='1.0' encoding='UTF-8'?>");
+        outputXML.append("<?xml version='1.0' encoding='UTF-8'?>");
+        outputXML.append("<result>");
          outputXML.append("<customer>");
-		 outputXML.append("<customerID>" +cid +"</customerID>");
+		 outputXML.append("<id>" +cid +"</id>");
        
         
         try{
@@ -261,19 +267,27 @@ public class crmSystem implements ExceptionListener {
             
             Statement statement = dbConn.createStatement();
              if(statement.execute(sql2)){
+               
                 rs = statement.getResultSet();
-                outputXML.append("<phoneNumber>" + rs.getString(2) +"</phoneNumber>");
-                outputXML.append("<email>" +rs.getString(3) +"</email>");
+               //System.out.println("-----"+sql2);
             }
+              while (rs.next()){
+                System.out.println("---------Here!---------");
+               outputXML.append("<phone>" + rs.getString(2) +"</phone>");
+                outputXML.append("<email>" +rs.getString(3) +"</email>");
+               } 
+               
+                
+            
+             
          
            outputXML.append("</customer>");
-           
             if(statement.execute(sql1)){
                 rs = statement.getResultSet();
             }
             
             while (rs.next()){
-                String restaurant_name = rs.getString(3);
+                String restaurant_name = rs.getString(1);
                 if (!rankingReference.containsKey(restaurant_name)){
                     rankingReference.put(restaurant_name,1);
                 }else{
@@ -291,14 +305,14 @@ public class crmSystem implements ExceptionListener {
                 index = unsortedList.indexOf(s);
                 if(index != -1){
                     endIndex = unsortedList.indexOf("</restaurant>",index);
-                    String toPop = unsortedList.substring(index, endIndex+14);
-                    unsortedList =unsortedList.delete(index, endIndex+14);
-                    unsortedList.insert(16,toPop);
+                    StringBuffer toPop = new StringBuffer(unsortedList.substring(index-18, endIndex+13));
+                    unsortedList =unsortedList.delete(index-18, endIndex+13);
+                    unsortedList = toPop.append(unsortedList);
                 }
                 
            }
            outputXML.append(unsortedList);
-           //outputXML.append("</restaurantList>");
+           outputXML.append("</result>");
            
            
             

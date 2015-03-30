@@ -18,7 +18,7 @@ public class restaurantManagementSystem implements ExceptionListener {
     /*-----------------------------------------------------------------------
     * Variables
     *----------------------------------------------------------------------*/
-    Connection connection = null;
+    javax.jms.Connection connection = null;
     Session session = null;
     MessageConsumer msgConsumer = null;
     Destination destination = null;
@@ -171,7 +171,7 @@ public class restaurantManagementSystem implements ExceptionListener {
      * main
      *----------------------------------------------------------------------*/
     public static void main(String[] args) {
-        new tibjmsMsgRRConsumer(args);
+        new restaurantManagementSystem(args);
     }
 
     // Handle the message when received.
@@ -255,6 +255,7 @@ public class restaurantManagementSystem implements ExceptionListener {
             Statement statement = dbConn.createStatement();
             if(statement.execute(sql1)){
                 rs = statement.getResultSet();
+                System.out.println("1st:"+sql1);
             }
             
             while (rs.next()){
@@ -264,17 +265,21 @@ public class restaurantManagementSystem implements ExceptionListener {
             }
             
             for(String rName: nameList){
-                String sql2 = "select * from package where restaurantName = ";
-                sql2 += rName;
+                String sql2 = "select * from package where restaurantName = '"+rName +"'";
+                System.out.println("2nd:"+sql2);
+                //sql2 += rName;
                 outputXML.append("<restaurant>");
-                outputXML.append("<restaurantName>" + rName + "</restaurantName>");
+                outputXML.append("<name>" + rName + "</name>");
                 if(statement.execute(sql2)){
                     rs = statement.getResultSet();
+                    System.out.println("Here!");
                 }
                 while(rs.next()){
-                    outputXML.append("<package_name>" + rs.getString(0) + "</package_name>");
-                    outputXML.append("<package_detail>" + rs.getString(3) + "</package_detail>");
-                    outputXML.append("<package_price>" + rs.getString(1) + "</package_price>");
+                    outputXML.append("<packages>");
+                    outputXML.append("<package_name>" + rs.getString(1) + "</package_name>");
+                    outputXML.append("<package_detail>" + rs.getString(4) + "</package_detail>");
+                    outputXML.append("<package_price>" + rs.getString(2) + "</package_price>");
+                    outputXML.append("</packages>");
                 }
                 outputXML.append("</restaurant>");
             }
