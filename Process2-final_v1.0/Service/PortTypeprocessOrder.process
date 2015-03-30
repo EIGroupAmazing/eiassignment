@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://xmlns.example.com/1427538568925" xmlns:ns5="http://xmlns.tibco.com/body" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/order.xsd" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:ns4="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:ns3="http://www.tibco.com/namespaces/tnt/plugins/mail" xmlns:pfx5="http://ws.apache.org/axis2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx4="http://xmlns.example.com/1427540200367" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx3="http://www.tibco.com/ns/no_namespace_schema_location/googleapi.xsd" xmlns:pfx2="http://www.tibco.com/ns/no_namespace_schema_location/sendOrder.xsd">
+    <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/order.xsd" schemaLocation="/order.xsd"/>
+    <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/sendOrder.xsd" schemaLocation="/sendOrder.xsd"/>
+    <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/googleapi.xsd" schemaLocation="/googleapi.xsd"/>
+    <wsdl:import namespace="http://xmlns.example.com/1427538568925" location="/Service/project2.wsdl"/>
+    <wsdl:import namespace="http://xmlns.example.com/1427540200367" location="/Service/project2-service0.serviceagent"/>
+    <wsdl:import namespace="http://ws.apache.org/axis2"/>
+    <wsdl:import namespace="http://ws.apache.org/axis2" location="/RetrieveCookingTime4fingers.wsdl"/>
+    <wsdl:import namespace="http://ws.apache.org/axis2" location="/RetrieveCookingTimeKFC.wsdl"/>
+    <wsdl:import namespace="http://ws.apache.org/axis2" location="/RetrieveCookingTimeSubway.wsdl"/>
+    <wsdl:import namespace="http://ws.apache.org/axis2" location="/GetCookingTime.wsdl"/>
+    <pd:name>Service/PortTypeprocessOrder.process</pd:name>
+    <pd:startName>Recieve orderInfo from COS</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings/>
+    <pd:starter name="Recieve orderInfo from COS">
+        <pd:type>com.tibco.plugin.jms.JMSQueueEventSource</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueEventSource</pd:resourceType>
+        <pd:x>56</pd:x>
+        <pd:y>106</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>q.request.placeorder</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/JMS Connection.sharedjmscon</ConnectionReference>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endX>806</pd:endX>
+    <pd:endY>252</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1427540200587</pd:targetNamespace>
+    <pd:activity name="Parse XML">
+        <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
+        <pd:x>171</pd:x>
+        <pd:y>97</pd:y>
+        <config>
+            <inputStyle>text</inputStyle>
+            <xsdVersion>default</xsdVersion>
+            <validateOutput>true</validateOutput>
+            <term ref="pfx:Order"/>
+        </config>
+        <pd:inputBindings>
+            <xmlString>
+                <xsl:value-of select="$Recieve-orderInfo-from-COS/ns:ActivityOutput/Body"/>
+            </xmlString>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="JMS Queue Sender">
+        <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
+        <pd:x>171</pd:x>
+        <pd:y>227</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>q,sendtocrm</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/JMS Connection.sharedjmscon</ConnectionReference>
+        </config>
+        <pd:inputBindings>
+            <ns:ActivityInput>
+                <Body>
+                    <xsl:value-of select="concat($Parse-XML/Order/customerId,&quot;,&quot;,$Parse-XML/Order/restaurant/restaurantName)"/>
+                </Body>
+            </ns:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Send Mail">
+        <pd:type>com.tibco.plugin.mail.MailPubActivity</pd:type>
+        <pd:resourceType>ae.activities.MailActivityResource</pd:resourceType>
+        <pd:x>667</pd:x>
+        <pd:y>101</pd:y>
+        <config>
+            <newMimeSupport>true</newMimeSupport>
+            <inputOutputVersion>5.2.0</inputOutputVersion>
+            <host>smtpcorp.com:2525</host>
+            <authenticate>true</authenticate>
+            <useSsl>false</useSsl>
+            <username>oyoyo19930814@gmail.com</username>
+            <password>Yyx8581247383</password>
+            <nonRFC822>false</nonRFC822>
+            <ns0:ssl xmlns:ns0="http://www.tibco.com/xmlns/aemeta/services/2002">
+                <ns0:strongCipherSuitesOnly>true</ns0:strongCipherSuitesOnly>
+            </ns0:ssl>
+            <InputHeaders>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Content-Type" type="xsd:string" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </InputHeaders>
+        </config>
+        <pd:inputBindings>
+            <ns3:mailActivityInput>
+                <from>
+                    <xsl:value-of select="&quot;oyoyo19930814@gmail.com&quot;"/>
+                </from>
+                <to>
+                    <xsl:value-of select="$Parse-XML/Order/email"/>
+                </to>
+                <replyTo>
+                    <xsl:value-of select="&quot;oyoyo19930814@gmail.com&quot;"/>
+                </replyTo>
+                <subject>
+                    <xsl:value-of select="&quot;Online meal order invoice&quot;"/>
+                </subject>
+                <ns5:bodyElement>
+                    <bodyText>
+                        <xsl:value-of select="concat(&quot;Dear customer, &#xA;&#xA;You have ordered &quot;,tib:concat-sequence-format($Parse-XML/Order/restaurant/packages/package_name,&quot;, &quot;),&quot; from &quot;,$Parse-XML/Order/restaurant/restaurantName,&quot;. &#xA;&#xA;Your total payment is &quot;,$Parse-XML/Order/totalPrice,&quot; dollars.&#xA;&#xA;Thank you so much for choosing Food Bear!! Feel free to call our hotline at 85225105 if you have any concern.&#xA;&#xA;Best regards,&#xA;Food Bear&quot;)"/>
+                    </bodyText>
+                </ns5:bodyElement>
+            </ns3:mailActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Parse-XML-1">
+        <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
+        <pd:x>565</pd:x>
+        <pd:y>100</pd:y>
+        <config>
+            <inputStyle>text</inputStyle>
+            <xsdVersion>default</xsdVersion>
+            <validateOutput>true</validateOutput>
+            <term ref="pfx3:DirectionsResponse"/>
+        </config>
+        <pd:inputBindings>
+            <xmlString>
+                <xsl:value-of select="$Invoke-REST-API/ns2:RESTOutput/msg"/>
+            </xmlString>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Java Code">
+        <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
+        <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
+        <pd:x>285</pd:x>
+        <pd:y>227</pd:y>
+        <config>
+            <fileName>PortTypeprocessOrderJavaCode</fileName>
+            <packageName>Service.PortTypeprocessOrder</packageName>
+            <fullsource>package Service.PortTypeprocessOrder;
+import java.util.*;
+import java.io.*;
+public class PortTypeprocessOrderJavaCode{
+/****** START SET/GET METHOD, DO NOT MODIFY *****/
+	protected String restaurant = "";
+	protected String postCode = "";
+	protected String restaurantName = "";
+	protected String restaurantAddress = "";
+	protected String restaurantGoogleAddress = "";
+	protected String countryPostCode = "";
+	public String getrestaurant() {
+		return restaurant;
+	}
+	public void setrestaurant(String val) {
+		restaurant = val;
+	}
+	public String getpostCode() {
+		return postCode;
+	}
+	public void setpostCode(String val) {
+		postCode = val;
+	}
+	public String getrestaurantName() {
+		return restaurantName;
+	}
+	public void setrestaurantName(String val) {
+		restaurantName = val;
+	}
+	public String getrestaurantAddress() {
+		return restaurantAddress;
+	}
+	public void setrestaurantAddress(String val) {
+		restaurantAddress = val;
+	}
+	public String getrestaurantGoogleAddress() {
+		return restaurantGoogleAddress;
+	}
+	public void setrestaurantGoogleAddress(String val) {
+		restaurantGoogleAddress = val;
+	}
+	public String getcountryPostCode() {
+		return countryPostCode;
+	}
+	public void setcountryPostCode(String val) {
+		countryPostCode = val;
+	}
+/****** END SET/GET METHOD, DO NOT MODIFY *****/
+	public PortTypeprocessOrderJavaCode() {
+	}
+	public void invoke() throws Exception {
+/* Available Variables: DO NOT MODIFY
+	In  : String restaurant
+	In  : String postCode
+	Out : String restaurantName
+	Out : String restaurantAddress
+	Out : String restaurantGoogleAddress
+	Out : String countryPostCode
+* Available Variables: DO NOT MODIFY *****/
+restaurantName=restaurant.substring(0,restaurant.indexOf('@'));
+restaurantAddress=restaurant.substring((restaurant.indexOf('@')+1));
+restaurantGoogleAddress=restaurant.substring((restaurant.indexOf('@')+1)).replaceAll(" ","%20");
+countryPostCode="Singapore%20"+postCode;}
+}
+</fullsource>
+            <inputData>
+                <row>
+                    <fieldName>restaurant</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>required</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>postCode</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>required</fieldRequired>
+                </row>
+            </inputData>
+            <outputData>
+                <row>
+                    <fieldName>restaurantName</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>required</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>restaurantAddress</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>required</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>restaurantGoogleAddress</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>required</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>countryPostCode</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>required</fieldRequired>
+                </row>
+            </outputData>
+            <byteCode>
+                <class>
+                    <name>PortTypeprocessOrderJavaCode</name>
+                    <byteCode>yv66vgAAADMAVQkAFAA0CQAUADUJABQANgkAFAA3CQAUADgJABQAOQoAFQA6CAA7CgA8AD0KADwAPgoAPAA/CABACABBCgA8AEIHAEMKAA8AOggARAoADwBFCgAPAEYHAEcHAEgBAApyZXN0YXVyYW50AQASTGphdmEvbGFuZy9TdHJpbmc7AQAIcG9zdENvZGUBAA5yZXN0YXVyYW50TmFtZQEAEXJlc3RhdXJhbnRBZGRyZXNzAQAXcmVzdGF1cmFudEdvb2dsZUFkZHJlc3MBAA9jb3VudHJ5UG9zdENvZGUBAA1nZXRyZXN0YXVyYW50AQAUKClMamF2YS9sYW5nL1N0cmluZzsBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQANc2V0cmVzdGF1cmFudAEAFShMamF2YS9sYW5nL1N0cmluZzspVgEAC2dldHBvc3RDb2RlAQALc2V0cG9zdENvZGUBABFnZXRyZXN0YXVyYW50TmFtZQEAEXNldHJlc3RhdXJhbnROYW1lAQAUZ2V0cmVzdGF1cmFudEFkZHJlc3MBABRzZXRyZXN0YXVyYW50QWRkcmVzcwEAGmdldHJlc3RhdXJhbnRHb29nbGVBZGRyZXNzAQAac2V0cmVzdGF1cmFudEdvb2dsZUFkZHJlc3MBABJnZXRjb3VudHJ5UG9zdENvZGUBABJzZXRjb3VudHJ5UG9zdENvZGUBAAY8aW5pdD4BAAMoKVYBAAZpbnZva2UBAApFeGNlcHRpb25zBwBJAQAKU291cmNlRmlsZQEAIVBvcnRUeXBlcHJvY2Vzc09yZGVySmF2YUNvZGUuamF2YQwAFgAXDAAYABcMABkAFwwAGgAXDAAbABcMABwAFwwALQAuAQAABwBKDABLAEwMAE0ATgwATQBPAQABIAEAAyUyMAwAUABRAQAXamF2YS9sYW5nL1N0cmluZ0J1aWxkZXIBAAxTaW5nYXBvcmUlMjAMAFIAUwwAVAAeAQA5U2VydmljZS9Qb3J0VHlwZXByb2Nlc3NPcmRlci9Qb3J0VHlwZXByb2Nlc3NPcmRlckphdmFDb2RlAQAQamF2YS9sYW5nL09iamVjdAEAE2phdmEvbGFuZy9FeGNlcHRpb24BABBqYXZhL2xhbmcvU3RyaW5nAQAHaW5kZXhPZgEABChJKUkBAAlzdWJzdHJpbmcBABYoSUkpTGphdmEvbGFuZy9TdHJpbmc7AQAVKEkpTGphdmEvbGFuZy9TdHJpbmc7AQAKcmVwbGFjZUFsbAEAOChMamF2YS9sYW5nL1N0cmluZztMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9TdHJpbmc7AQAGYXBwZW5kAQAtKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1N0cmluZ0J1aWxkZXI7AQAIdG9TdHJpbmcAIQAUABUAAAAGAAQAFgAXAAAABAAYABcAAAAEABkAFwAAAAQAGgAXAAAABAAbABcAAAAEABwAFwAAAA4AAQAdAB4AAQAfAAAAHQABAAEAAAAFKrQAAbAAAAABACAAAAAGAAEAAAANAAEAIQAiAAEAHwAAACIAAgACAAAABiortQABsQAAAAEAIAAAAAoAAgAAABAABQARAAEAIwAeAAEAHwAAAB0AAQABAAAABSq0AAKwAAAAAQAgAAAABgABAAAAEwABACQAIgABAB8AAAAiAAIAAgAAAAYqK7UAArEAAAABACAAAAAKAAIAAAAWAAUAFwABACUAHgABAB8AAAAdAAEAAQAAAAUqtAADsAAAAAEAIAAAAAYAAQAAABkAAQAmACIAAQAfAAAAIgACAAIAAAAGKiu1AAOxAAAAAQAgAAAACgACAAAAHAAFAB0AAQAnAB4AAQAfAAAAHQABAAEAAAAFKrQABLAAAAABACAAAAAGAAEAAAAfAAEAKAAiAAEAHwAAACIAAgACAAAABiortQAEsQAAAAEAIAAAAAoAAgAAACIABQAjAAEAKQAeAAEAHwAAAB0AAQABAAAABSq0AAWwAAAAAQAgAAAABgABAAAAJQABACoAIgABAB8AAAAiAAIAAgAAAAYqK7UABbEAAAABACAAAAAKAAIAAAAoAAUAKQABACsAHgABAB8AAAAdAAEAAQAAAAUqtAAGsAAAAAEAIAAAAAYAAQAAACsAAQAsACIAAQAfAAAAIgACAAIAAAAGKiu1AAaxAAAAAQAgAAAACgACAAAALgAFAC8AAQAtAC4AAQAfAAAAXQACAAEAAAApKrcAByoSCLUAASoSCLUAAioSCLUAAyoSCLUABCoSCLUABSoSCLUABrEAAAABACAAAAAiAAgAAAAxAAQABgAKAAcAEAAIABYACQAcAAoAIgALACgAMgABAC8ALgACAB8AAACHAAUAAQAAAGMqKrQAAQMqtAABEEC2AAm2AAq1AAMqKrQAASq0AAEQQLYACQRgtgALtQAEKiq0AAEqtAABEEC2AAkEYLYACxIMEg22AA61AAUquwAPWbcAEBIRtgASKrQAArYAErYAE7UABrEAAAABACAAAAASAAQAAAA8ABUAPQArAD4ASAA/ADAAAAAEAAEAMQABADIAAAACADM=</byteCode>
+                </class>
+            </byteCode>
+        </config>
+        <pd:inputBindings>
+            <javaCodeActivityInput>
+                <restaurant>
+                    <xsl:value-of select="$Parse-XML/Order/restaurant/restaurantName"/>
+                </restaurant>
+                <postCode>
+                    <xsl:value-of select="$Parse-XML/Order/postcode"/>
+                </postCode>
+            </javaCodeActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Invoke REST API">
+        <pd:type>com.tibco.plugin.json.activities.RestActivity</pd:type>
+        <pd:resourceType>ae.activities.RestActivity</pd:resourceType>
+        <pd:x>564</pd:x>
+        <pd:y>226</pd:y>
+        <config>
+            <restMethodUI>GET</restMethodUI>
+            <restResponseType>XML</restResponseType>
+            <authChoiceUI>No Authentication</authChoiceUI>
+            <restURI>https://maps.googleapis.com/maps/api/directions/xml</restURI>
+            <restInputReferNode>
+                <xsd:element name="Parameters">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Query" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="mode" type="xsd:string"/>
+                                        <xsd:element name="destination" type="xsd:string"/>
+                                        <xsd:element name="origin" type="xsd:string" minOccurs="0"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="Header" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="param" type="xsd:string" minOccurs="0"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="Body" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="Form" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="param" type="xsd:string" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="Text" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="type" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content" type="xsd:string" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="Binary" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="type" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content" type="xsd:base64Binary" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="Multipart" minOccurs="0" maxOccurs="unbounded">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="filename" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content-type" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content-id" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content" minOccurs="0">
+                                                        <xsd:complexType>
+                                                            <xsd:choice>
+                                                                <xsd:element name="binary" type="xsd:base64Binary"/>
+                                                                <xsd:element name="text" type="xsd:string"/>
+                                                                <xsd:element name="fileName" type="xsd:string"/>
+                                                            </xsd:choice>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </restInputReferNode>
+            <restOutputReferNode>
+                <xsd:element name="header">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Server" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Location" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Allow" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Date" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Set-Cookie" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Pragma" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Type" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Length" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Encoding" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Range" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Last-Modifie" type="xsd:string" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </restOutputReferNode>
+        </config>
+        <pd:inputBindings>
+            <ns2:ActivityInput>
+                <ns2:Parameters>
+                    <Query>
+                        <mode>
+                            <xsl:value-of select="&quot;driving&quot;"/>
+                        </mode>
+                        <destination>
+                            <xsl:value-of select="$Java-Code/javaCodeActivityOutput/countryPostCode"/>
+                        </destination>
+                        <origin>
+                            <xsl:value-of select="$Java-Code/javaCodeActivityOutput/restaurantAddress"/>
+                        </origin>
+                    </Query>
+                </ns2:Parameters>
+            </ns2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Send SMS">
+        <pd:type>com.tibco.plugin.json.activities.RestActivity</pd:type>
+        <pd:resourceType>ae.activities.RestActivity</pd:resourceType>
+        <pd:x>669</pd:x>
+        <pd:y>250</pd:y>
+        <config>
+            <restMethodUI>GET</restMethodUI>
+            <restResponseType>Default</restResponseType>
+            <authChoiceUI>No Authentication</authChoiceUI>
+            <restURI>http://gateway.onewaysms.sg:10002/api.aspx</restURI>
+            <restInputReferNode>
+                <xsd:element name="Parameters">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Query" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="message" type="xsd:string"/>
+                                        <xsd:element name="languagetype" type="xsd:string"/>
+                                        <xsd:element name="senderid" type="xsd:string"/>
+                                        <xsd:element name="mobileno" type="xsd:string"/>
+                                        <xsd:element name="apipassword" type="xsd:string"/>
+                                        <xsd:element name="apiusername" type="xsd:string"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="Header" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="param" type="xsd:string" minOccurs="0"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="Body" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="Form" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="param" type="xsd:string" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="Text" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="type" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content" type="xsd:string" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="Binary" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="type" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content" type="xsd:base64Binary" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="Multipart" minOccurs="0" maxOccurs="unbounded">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="filename" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content-type" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content-id" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content" minOccurs="0">
+                                                        <xsd:complexType>
+                                                            <xsd:choice>
+                                                                <xsd:element name="binary" type="xsd:base64Binary"/>
+                                                                <xsd:element name="text" type="xsd:string"/>
+                                                                <xsd:element name="fileName" type="xsd:string"/>
+                                                            </xsd:choice>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </restInputReferNode>
+            <restOutputReferNode>
+                <xsd:element name="header">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Server" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Location" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Allow" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Date" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Set-Cookie" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Pragma" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Type" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Length" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Encoding" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Range" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Last-Modifie" type="xsd:string" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </restOutputReferNode>
+        </config>
+        <pd:inputBindings>
+            <ns2:ActivityInput>
+                <ns2:Parameters>
+                    <Query>
+                        <message>
+                            <xsl:value-of select="concat(&quot;Dear customer,&#xA;&#xA;Thanks for ordering from Food Bear. =)&#xA;&#xA;Your order will be ready in &quot;,concat($fingers-WS/outputMessage/pfx5:generateResponse/pfx5:return, $KFC-WS/outputMessage/pfx5:generateResponse/pfx5:return,$Otherwise-WS/outputMessage/pfx5:generateResponse/pfx5:return),&quot; minutes.&#xA;Deliver time: &quot;,$Parse-XML-1/DirectionsResponse/route/leg/duration)"/>
+                        </message>
+                        <languagetype>
+                            <xsl:value-of select="1"/>
+                        </languagetype>
+                        <senderid>
+                            <xsl:value-of select="&quot;TEST&quot;"/>
+                        </senderid>
+                        <mobileno>
+                            <xsl:value-of select="concat(&quot;65&quot;,$Parse-XML/Order/phoneNumber)"/>
+                        </mobileno>
+                        <apipassword>
+                            <xsl:value-of select="&quot;APIL4CSQY22VVL4CSQ&quot;"/>
+                        </apipassword>
+                        <apiusername>
+                            <xsl:value-of select="&quot;APIL4CSQY22VV&quot;"/>
+                        </apiusername>
+                    </Query>
+                </ns2:Parameters>
+            </ns2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="4 fingers WS">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+        <pd:x>410</pd:x>
+        <pd:y>122</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <soapAttachmentStyle>SwA</soapAttachmentStyle>
+            <timeoutType>Seconds</timeoutType>
+            <service>pfx5:RetrieveCookingTime4fingers</service>
+            <servicePort>RetrieveCookingTime4fingersHttpSoap11Endpoint</servicePort>
+            <operation>generate</operation>
+            <soapAction>urn:generate</soapAction>
+            <endpointURL>http://localhost:8080/axis2/services/RetrieveCookingTime4fingers.RetrieveCookingTime4fingersHttpSoap11Endpoint/</endpointURL>
+            <authScheme>NONE</authScheme>
+        </config>
+        <pd:inputBindings>
+            <inputMessage>
+                <pfx5:generate>
+                    <pfx5:args0>
+                        <xsl:value-of select="$Java-Code/javaCodeActivityOutput/restaurantAddress"/>
+                    </pfx5:args0>
+                    <pfx5:args1>
+                        <xsl:value-of select="concat(tib:concat-sequence($Parse-XML/Order/restaurant/packages/package_name),tib:concat-sequence( $Parse-XML/Order/restaurant/packages/package_detail))"/>
+                    </pfx5:args1>
+                </pfx5:generate>
+            </inputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="KFC WS">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+        <pd:x>417</pd:x>
+        <pd:y>227</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <soapAttachmentStyle>SwA</soapAttachmentStyle>
+            <timeoutType>Seconds</timeoutType>
+            <service>pfx5:RetrieveCookingTimeKFC</service>
+            <servicePort>RetrieveCookingTimeKFCHttpSoap11Endpoint</servicePort>
+            <operation>generate</operation>
+            <soapAction>urn:generate</soapAction>
+            <endpointURL>http://localhost:8080/axis2/services/RetrieveCookingTimeKFC.RetrieveCookingTimeKFCHttpSoap11Endpoint/</endpointURL>
+            <authScheme>NONE</authScheme>
+        </config>
+        <pd:inputBindings>
+            <inputMessage>
+                <pfx5:generate>
+                    <pfx5:args0>
+                        <xsl:value-of select="$Java-Code/javaCodeActivityOutput/restaurantAddress"/>
+                    </pfx5:args0>
+                    <pfx5:args1>
+                        <xsl:value-of select="concat(tib:concat-sequence($Parse-XML/Order/restaurant/packages/package_name),tib:concat-sequence( $Parse-XML/Order/restaurant/packages/package_detail))"/>
+                    </pfx5:args1>
+                </pfx5:generate>
+            </inputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Otherwise WS">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+        <pd:x>413</pd:x>
+        <pd:y>323</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <soapAttachmentStyle>SwA</soapAttachmentStyle>
+            <timeoutType>Seconds</timeoutType>
+            <service>pfx5:GetCookingTime</service>
+            <servicePort>GetCookingTimeHttpSoap11Endpoint</servicePort>
+            <operation>generate</operation>
+            <soapAction>urn:generate</soapAction>
+            <endpointURL>http://localhost:8080/axis2/services/GetCookingTime.GetCookingTimeHttpSoap11Endpoint/</endpointURL>
+            <authScheme>NONE</authScheme>
+        </config>
+        <pd:inputBindings>
+            <inputMessage>
+                <pfx5:generate>
+                    <pfx5:args0>
+                        <xsl:value-of select="$Java-Code/javaCodeActivityOutput/restaurantAddress"/>
+                    </pfx5:args0>
+                    <pfx5:args1>
+                        <xsl:value-of select="concat(tib:concat-sequence($Parse-XML/Order/restaurant/packages/package_name),tib:concat-sequence( $Parse-XML/Order/restaurant/packages/package_detail))"/>
+                    </pfx5:args1>
+                </pfx5:generate>
+            </inputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Recieve orderInfo from COS</pd:from>
+        <pd:to>Parse XML</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Parse XML</pd:from>
+        <pd:to>JMS Queue Sender</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Invoke REST API</pd:from>
+        <pd:to>Parse-XML-1</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Parse-XML-1</pd:from>
+        <pd:to>Send Mail</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Send Mail</pd:from>
+        <pd:to>Send SMS</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Send SMS</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JMS Queue Sender</pd:from>
+        <pd:to>Java Code</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Java Code</pd:from>
+        <pd:to>4 fingers WS</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16724788</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Java-Code/javaCodeActivityOutput/restaurantName="4 fingers"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Java Code</pd:from>
+        <pd:to>KFC WS</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16724788</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Java-Code/javaCodeActivityOutput/restaurantName="4 fingers"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>4 fingers WS</pd:from>
+        <pd:to>Invoke REST API</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>KFC WS</pd:from>
+        <pd:to>Invoke REST API</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Java Code</pd:from>
+        <pd:to>Otherwise WS</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16724788</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Otherwise WS</pd:from>
+        <pd:to>Invoke REST API</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

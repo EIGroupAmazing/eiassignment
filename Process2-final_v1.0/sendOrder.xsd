@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--Created with Liquid XML 2014 Developer Bundle Edition (Education) 12.2.8.5459 (http://www.liquid-technologies.com)-->
+<xs:schema elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="Order">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="customerId"
+                            type="xs:string" />
+                <xs:element name="restaurantName"
+                            type="xs:string" />
+                <xs:element name="packages">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element name="package_name"
+                                        type="xs:string" />
+                            <xs:element name="package_detail"
+                                        type="xs:string" />
+                            <xs:element name="package_price"
+                                        type="xs:double" />
+                        </xs:all>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="restaurantUrl"
+                            type="xs:string" />
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
