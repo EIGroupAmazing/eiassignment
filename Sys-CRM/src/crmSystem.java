@@ -233,7 +233,7 @@ public class crmSystem implements ExceptionListener {
                 System.out.println("\tMessage ID: " + replyMessage.getJMSMessageID());
                 System.out.println("\tCorrel. ID: " + replyMessage.getJMSCorrelationID());
                 System.out.println("\tReply to:   " + replyMessage.getJMSReplyTo());
-               // System.out.println("\tContents:   " + replyMessage.getText());
+                //System.out.println("\tContents:   " + replyMessage.getText());
                 System.out.println("\tDestination:" + replyMessage.getJMSDestination());
             } else {
                 System.out.println("Invalid message detected");
@@ -321,17 +321,17 @@ public class crmSystem implements ExceptionListener {
            int endIndex =0;
            //StringBuilder test = unsortedList;
            String toPop = "";
-           for (int j=0;j<rank.size();j++){
+           for (int j=rank.size()-1;j>=0;j--){
                 index = unsortedList.indexOf(rank.get(j));
                 if(index != -1){
                     endIndex = unsortedList.indexOf("</restaurant>",index);
                      toPop = toPop.concat(unsortedList.substring(index-18, endIndex+13));
                     unsortedList =unsortedList.delete(index-18, endIndex+13);
-                    unsortedList = unsortedList.insert(0,toPop);
+                    
                 }
                 
            }
-           
+           unsortedList = unsortedList.insert(0,toPop);
            outputXML.append(unsortedList);
            outputXML.append("</result>");
            
