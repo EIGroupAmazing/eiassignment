@@ -8,12 +8,9 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.httpclient.*;
-import org.apache.commons.httpclient.methods.*;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.Pkg;
 import model.Restaurant;
-import utility.EMSMessageSender;
 
 
 @WebServlet(name = "OrderParingController", urlPatterns = {"/take-order"})
@@ -119,7 +115,9 @@ public class OrderParsingController extends HttpServlet {
                 PrintWriter writer = new PrintWriter("order.xml", "UTF-8");
                 writer.println(orderXML);
                 writer.close();
-                EMSMessageSender emsSender = new EMSMessageSender("q.request.placeorder","192.168.137.254");
+                
+                //Thread.sleep(15000);
+                //EMSMessageSender emsSender = new EMSMessageSender("q.request.placeorder","192.168.137.254");
                 //emsSender.sendMessage(orderXML,false);
 
                 //request.setAttribute("message","Your order is being processed. We will "
@@ -129,6 +127,8 @@ public class OrderParsingController extends HttpServlet {
             }
             
         
+        } catch (Exception ex) {
+            Logger.getLogger(OrderParsingController.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             out.close();
         }

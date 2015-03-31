@@ -15,7 +15,8 @@ public class EMSMessageSender {
 
 
     //String serverUrl = "196.108.137.109";
-    String serverUrl = "192.168.137.254";
+    //String serverUrl = "192.168.137.254";
+    String serverUrl = "10.124.9.103";
     //String serverUrl = "localhost";
     String userName = null;
     String password = null;
