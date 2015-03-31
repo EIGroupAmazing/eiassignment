@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://xmlns.example.com/1427538568925" xmlns:ns5="http://xmlns.tibco.com/body" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/order.xsd" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:ns4="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:ns3="http://www.tibco.com/namespaces/tnt/plugins/mail" xmlns:pfx5="http://ws.apache.org/axis2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx4="http://xmlns.example.com/1427540200367" xmlns:pfx3="http://www.tibco.com/ns/no_namespace_schema_location/googleapi.xsd" xmlns:pfx2="http://www.tibco.com/ns/no_namespace_schema_location/sendOrder.xsd" xmlns:pfx6="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRoute.xsd">
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://xmlns.example.com/1427538568925" xmlns:ns5="http://xmlns.tibco.com/body" xmlns:pfx="http://www.tibco.com/ns/no_namespace_schema_location/order.xsd" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:ns4="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:ns3="http://www.tibco.com/namespaces/tnt/plugins/mail" xmlns:pfx5="http://ws.apache.org/axis2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx4="http://xmlns.example.com/1427540200367" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx3="http://www.tibco.com/ns/no_namespace_schema_location/googleapi.xsd" xmlns:pfx2="http://www.tibco.com/ns/no_namespace_schema_location/sendOrder.xsd" xmlns:pfx6="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRoute.xsd">
     <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/order.xsd" schemaLocation="/order.xsd"/>
     <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/sendOrder.xsd" schemaLocation="/sendOrder.xsd"/>
     <xsd:import namespace="http://www.tibco.com/ns/no_namespace_schema_location/retrieveRoute.xsd" schemaLocation="/retrieveRoute.xsd"/>
     <wsdl:import namespace="http://xmlns.example.com/1427538568925" location="/Service/project2.wsdl"/>
     <wsdl:import namespace="http://xmlns.example.com/1427540200367" location="/Service/project2-service0.serviceagent"/>
     <wsdl:import namespace="http://ws.apache.org/axis2"/>
-    <wsdl:import namespace="http://ws.apache.org/axis2" location="/RetrieveCookingTime4fingers.wsdl"/>
-    <wsdl:import namespace="http://ws.apache.org/axis2" location="/RetrieveCookingTimeKFC.wsdl"/>
-    <wsdl:import namespace="http://ws.apache.org/axis2" location="/RetrieveCookingTimeSubway.wsdl"/>
+    <wsdl:import namespace="http://ws.apache.org/axis2" location="/GetCookingTime4Fingers.wsdl"/>
+    <wsdl:import namespace="http://ws.apache.org/axis2" location="/GetCookingTimeKFC.wsdl"/>
     <wsdl:import namespace="http://ws.apache.org/axis2" location="/GetCookingTime.wsdl"/>
     <pd:name>Service/PortTypeprocessOrder.process</pd:name>
     <pd:startName>Recieve orderInfo from COS</pd:startName>
@@ -537,17 +536,17 @@ countryPostCode="Singapore%20"+postCode;}
     <pd:activity name="4 fingers WS">
         <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
         <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
-        <pd:x>490</pd:x>
-        <pd:y>140</pd:y>
+        <pd:x>438</pd:x>
+        <pd:y>174</pd:y>
         <config>
             <timeout>10</timeout>
             <soapAttachmentStyle>SwA</soapAttachmentStyle>
             <timeoutType>Seconds</timeoutType>
-            <service>pfx5:RetrieveCookingTime4fingers</service>
-            <servicePort>RetrieveCookingTime4fingersHttpSoap11Endpoint</servicePort>
+            <service>pfx5:GetCookingTime4Fingers</service>
+            <servicePort>GetCookingTime4FingersHttpSoap11Endpoint</servicePort>
             <operation>generate</operation>
             <soapAction>urn:generate</soapAction>
-            <endpointURL>http://localhost:8080/axis2/services/RetrieveCookingTime4fingers.RetrieveCookingTime4fingersHttpSoap11Endpoint/</endpointURL>
+            <endpointURL>http://localhost:8080/axis2/services/GetCookingTime4Fingers.GetCookingTime4FingersHttpSoap11Endpoint/</endpointURL>
             <authScheme>NONE</authScheme>
         </config>
         <pd:inputBindings>
@@ -557,7 +556,7 @@ countryPostCode="Singapore%20"+postCode;}
                         <xsl:value-of select="$Java-Code/javaCodeActivityOutput/restaurantAddress"/>
                     </pfx5:args0>
                     <pfx5:args1>
-                        <xsl:value-of select="concat(tib:concat-sequence($Parse-XML-from-COS/Order/restaurant/packages/package_name),tib:concat-sequence( $Parse-XML-from-COS/Order/restaurant/packages/package_detail))"/>
+                        <xsl:value-of select="tib:concat-sequence($Parse-XML-from-COS/Order/restaurant/packages/package_name)"/>
                     </pfx5:args1>
                 </pfx5:generate>
             </inputMessage>
@@ -566,17 +565,17 @@ countryPostCode="Singapore%20"+postCode;}
     <pd:activity name="KFC WS">
         <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
         <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
-        <pd:x>476</pd:x>
-        <pd:y>228</pd:y>
+        <pd:x>444</pd:x>
+        <pd:y>290</pd:y>
         <config>
             <timeout>10</timeout>
             <soapAttachmentStyle>SwA</soapAttachmentStyle>
             <timeoutType>Seconds</timeoutType>
-            <service>pfx5:RetrieveCookingTimeKFC</service>
-            <servicePort>RetrieveCookingTimeKFCHttpSoap11Endpoint</servicePort>
+            <service>pfx5:GetCookingTimeKFC</service>
+            <servicePort>GetCookingTimeKFCHttpSoap11Endpoint</servicePort>
             <operation>generate</operation>
             <soapAction>urn:generate</soapAction>
-            <endpointURL>http://localhost:8080/axis2/services/RetrieveCookingTimeKFC.RetrieveCookingTimeKFCHttpSoap11Endpoint/</endpointURL>
+            <endpointURL>http://localhost:8080/axis2/services/GetCookingTimeKFC.GetCookingTimeKFCHttpSoap11Endpoint/</endpointURL>
             <authScheme>NONE</authScheme>
         </config>
         <pd:inputBindings>
@@ -586,7 +585,7 @@ countryPostCode="Singapore%20"+postCode;}
                         <xsl:value-of select="$Java-Code/javaCodeActivityOutput/restaurantAddress"/>
                     </pfx5:args0>
                     <pfx5:args1>
-                        <xsl:value-of select="concat(tib:concat-sequence($Parse-XML-from-COS/Order/restaurant/packages/package_name),tib:concat-sequence( $Parse-XML-from-COS/Order/restaurant/packages/package_detail))"/>
+                        <xsl:value-of select="tib:concat-sequence($Parse-XML-from-COS/Order/restaurant/packages/package_name)"/>
                     </pfx5:args1>
                 </pfx5:generate>
             </inputMessage>
@@ -595,8 +594,8 @@ countryPostCode="Singapore%20"+postCode;}
     <pd:activity name="Otherwise WS">
         <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
         <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
-        <pd:x>462</pd:x>
-        <pd:y>325</pd:y>
+        <pd:x>435</pd:x>
+        <pd:y>378</pd:y>
         <config>
             <timeout>10</timeout>
             <soapAttachmentStyle>SwA</soapAttachmentStyle>
@@ -615,7 +614,7 @@ countryPostCode="Singapore%20"+postCode;}
                         <xsl:value-of select="$Java-Code/javaCodeActivityOutput/restaurantAddress"/>
                     </pfx5:args0>
                     <pfx5:args1>
-                        <xsl:value-of select="concat(tib:concat-sequence($Parse-XML-from-COS/Order/restaurant/packages/package_name),tib:concat-sequence( $Parse-XML-from-COS/Order/restaurant/packages/package_detail))"/>
+                        <xsl:value-of select="tib:concat-sequence($Parse-XML-from-COS/Order/restaurant/packages/package_name)"/>
                     </pfx5:args1>
                 </pfx5:generate>
             </inputMessage>
@@ -657,12 +656,33 @@ countryPostCode="Singapore%20"+postCode;}
         <pd:conditionType>always</pd:conditionType>
     </pd:transition>
     <pd:transition>
+        <pd:from>Send Invoice by Mail</pd:from>
+        <pd:to>Send Deliver Time by SMS</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Send Deliver Time by SMS</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
         <pd:from>Java Code</pd:from>
         <pd:to>4 fingers WS</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16724788</pd:lineColor>
         <pd:conditionType>xpath</pd:conditionType>
-        <pd:xpath>$Java-Code/javaCodeActivityOutput/restaurantName="4 fingers"</pd:xpath>
+        <pd:xpath>$Java-Code/javaCodeActivityOutput/restaurantName="4 Fingers"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>4 fingers WS</pd:from>
+        <pd:to>Check Deliver Time from GoogleMapAPI</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
     </pd:transition>
     <pd:transition>
         <pd:from>Java Code</pd:from>
@@ -671,13 +691,6 @@ countryPostCode="Singapore%20"+postCode;}
         <pd:lineColor>-16724788</pd:lineColor>
         <pd:conditionType>xpath</pd:conditionType>
         <pd:xpath>$Java-Code/javaCodeActivityOutput/restaurantName="KFC"</pd:xpath>
-    </pd:transition>
-    <pd:transition>
-        <pd:from>4 fingers WS</pd:from>
-        <pd:to>Check Deliver Time from GoogleMapAPI</pd:to>
-        <pd:lineType>Default</pd:lineType>
-        <pd:lineColor>-16777216</pd:lineColor>
-        <pd:conditionType>always</pd:conditionType>
     </pd:transition>
     <pd:transition>
         <pd:from>KFC WS</pd:from>
@@ -696,20 +709,6 @@ countryPostCode="Singapore%20"+postCode;}
     <pd:transition>
         <pd:from>Otherwise WS</pd:from>
         <pd:to>Check Deliver Time from GoogleMapAPI</pd:to>
-        <pd:lineType>Default</pd:lineType>
-        <pd:lineColor>-16777216</pd:lineColor>
-        <pd:conditionType>always</pd:conditionType>
-    </pd:transition>
-    <pd:transition>
-        <pd:from>Send Invoice by Mail</pd:from>
-        <pd:to>Send Deliver Time by SMS</pd:to>
-        <pd:lineType>Default</pd:lineType>
-        <pd:lineColor>-16777216</pd:lineColor>
-        <pd:conditionType>always</pd:conditionType>
-    </pd:transition>
-    <pd:transition>
-        <pd:from>Send Deliver Time by SMS</pd:from>
-        <pd:to>End</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
