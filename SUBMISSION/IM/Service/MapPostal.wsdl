@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:ns2="http://xmlns.example.com/unique/default/namespace/1134438639123" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:ns="http://xmlns.example.com/unique/default/namespace/1134438639124" xmlns:tns="http://xmlns.example.com/1427451287496" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://xmlns.example.com/1427451287496">
+    <import namespace="http://xmlns.example.com/unique/default/namespace/1134438639123" location="../restaurant_list.xsd"/>
+    <import namespace="http://xmlns.example.com/unique/default/namespace/1134438639124" location="../search_creteria.xsd"/>
+    <message name="RequestMessage">
+        <part name="part1" element="ns:search_creteria"/>
+    </message>
+    <message name="ResponseMessage">
+        <part name="part1" element="ns2:restaurant_list"/>
+    </message>
+    <portType name="PortType">
+        <operation name="sendRestaurantList">
+            <input message="tns:RequestMessage"/>
+            <output message="tns:ResponseMessage"/>
+        </operation>
+    </portType>
+</definitions>
