@@ -85,7 +85,7 @@ public class RestaurantRetrievalController extends HttpServlet {
             
             //ArrayList<String[]> pkgList = new ArrayList();//The returned arraylist message will be stored here
             request.setAttribute("message",restList );
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/listPackages.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/list.jsp");
             dispatcher.forward(request,response);
 
         }catch(NumberFormatException e){

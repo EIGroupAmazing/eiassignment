@@ -82,7 +82,7 @@ public class OrderParsingController extends HttpServlet {
                 System.out.println("redirecting to listPackages.jsp");
                 request.setAttribute("error","Please select pakages from one and only one restaurant!" );
                 request.setAttribute("message",restList );
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/listPackages.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/list.jsp");
                 dispatcher.forward(request,response);
                 
             }else{
